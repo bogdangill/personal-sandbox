@@ -1,15 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
 
 module.exports = {
-    mode: 'development',
     entry: './src/app.js',
-    output: {
-        filename: 'main.js',
-        path: path.resolve(__dirname, 'build'),
-    },
     plugins: [new HtmlWebpackPlugin({
-        title: 'Test html generation'
+        template: './src/template.html',
     })],
     module: {
         rules: [
@@ -18,5 +12,5 @@ module.exports = {
                 use: ['style-loader', 'css-loader']
             }
         ]
-    }
+    },
 }

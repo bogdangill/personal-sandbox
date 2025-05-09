@@ -1,3 +1,3 @@
 import "./styles.css";
 
-alert("test");
+alert('ну-ка');
