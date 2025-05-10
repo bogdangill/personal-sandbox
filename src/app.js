@@ -1,6 +1,8 @@
 import 'bulma/css/bulma.min.css';
+import 'highlight.js/styles/an-old-hope.min.css'
 import "./styles.css";
 import {marked} from 'marked';
+import hljs from 'highlight.js';
 
 async function loadTask(taskName) {
     try {
@@ -13,9 +15,12 @@ async function loadTask(taskName) {
         if (typeof solution !== 'function') {
             throw new Error(`Файл ${taskName}.js не экспортирует функцию по умолчанию.`);
         }
+
+        const code = solution.toString();
+        const highlightedCode = hljs.highlight(code, { language: 'javascript' }).value;
     
         document.getElementById('task-description').innerHTML = marked.parse(markdown$);
-        document.getElementById('task-solution').innerText = solution;
+        document.getElementById('task-solution').innerHTML = `${highlightedCode}`;
     } catch (error) {
         console.error('Ошибка загрузки задачи:', error);
         document.getElementById('task-solution').innerText = `Ошибка: ${error.message}`;
