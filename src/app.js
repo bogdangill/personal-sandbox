@@ -1,6 +1,5 @@
 import 'bulma/css/bulma.min.css';
 import 'highlight.js/styles/an-old-hope.min.css'
-import "./styles.css";
 import {marked} from 'marked';
 import hljs from 'highlight.js';
 
