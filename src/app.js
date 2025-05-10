@@ -16,7 +16,9 @@ async function loadTask(taskName) {
             throw new Error(`Файл ${taskName}.js не экспортирует функцию по умолчанию.`);
         }
 
-        const code = solution.toString();
+        const code = solution.toString()
+            .replace(/^\(\)\s*=>\s*\{?|\}$/g, '')
+            .trim();
         const highlightedCode = hljs.highlight(code, { language: 'javascript' }).value;
     
         document.getElementById('task-description').innerHTML = marked.parse(markdown$);
