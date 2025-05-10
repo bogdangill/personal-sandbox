@@ -1,3 +1,4 @@
+import 'bulma/css/bulma.min.css';
 import "./styles.css";
 
-alert('ну-ка');
+const root = document.getElementById("root");
