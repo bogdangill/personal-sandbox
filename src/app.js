@@ -32,4 +32,4 @@ async function loadTask(taskName) {
 }
 
 //пока так, потом сделаю выбор задач через интерфейс
-loadTask('task-1');
+loadTask('task-2');
