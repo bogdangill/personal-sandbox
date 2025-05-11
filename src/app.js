@@ -1,7 +1,10 @@
 import 'bulma/css/bulma.min.css';
 import 'highlight.js/styles/an-old-hope.min.css'
 import {marked} from 'marked';
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+
+hljs.registerLanguage('javascript', javascript);
 
 async function loadTask(taskName) {
     try {
