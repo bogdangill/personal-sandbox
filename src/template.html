@@ -4,33 +4,29 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>my sandbox</title>
+    <title>JS Песочница</title>
 </head>
-<body>
-    <main>
-        <section class="section">
-            <h1 class="title is-1 is-spaced">
-                Тестовая песочница
-            </h1>
-            <p class="subtitle">
-                Снизу будет выводиться описание текущей задачи и решение
-            </p>
-            <hr class="hr">
-            <div class="grid is-col-min-20 is-column-gap-8">
-                <article class="cell">
-                    <h2 class="title is-2">
-                        Задача
-                    </h2>
-                    <div class="content" id="task-description"></div>
-                </article>
-                <article class="cell">
-                    <h2 class="title is-2">
-                        Решение
-                    </h2>
-                    <pre id="task-solution"></pre>
-                </article>
+<body data-theme="dark">
+    <main class="uk-container uk-container-xlarge">
+        <div uk-grid class="uk-grid-collapse">
+            <section class="uk-tile uk-tile-muted uk-padding uk-width-1-1">
+                <h1 class="uk-heading-medium">🧪 JavaScript песочница</h1>
+                <p class="uk-text-lead">Снизу описание текущей задачи и решение</p>
+            </section>
+
+            <div class="uk-width-1-1">
+                <div uk-grid class="uk-grid-collapse">
+                    <article class="uk-width-1-2@l uk-tile uk-tile-primary uk-padding">
+                        <h2 class="uk-heading-small">📝 Задача</h2>
+                        <div id="task-description"></div>
+                    </article>
+                    <article class="uk-width-1-2@l uk-tile uk-tile-secondary uk-padding">
+                        <h2 class="uk-heading-small">💻 Решение</h2>
+                        <pre id="task-solution"></pre>
+                    </article>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 </body>
 </html>

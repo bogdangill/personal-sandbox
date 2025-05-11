@@ -27,6 +27,7 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "bulma": "^1.0.4"
+    "bulma": "^1.0.4",
+    "uikit": "^3.23.7"
   }
 }

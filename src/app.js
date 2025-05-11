@@ -1,4 +1,6 @@
-import 'bulma/css/bulma.min.css';
+// import 'bulma/css/bulma.min.css';
+import UIkit from 'uikit';
+import 'uikit/dist/css/uikit-core.css';
 import 'highlight.js/styles/an-old-hope.min.css'
 import {marked} from 'marked';
 import hljs from 'highlight.js/lib/core';
@@ -32,4 +34,4 @@ async function loadTask(taskName) {
 }
 
 //пока так, потом сделаю выбор задач через интерфейс
-loadTask('task-2');
+loadTask('task-1');
