@@ -1,7 +1,7 @@
-// import 'bulma/css/bulma.min.css';
+import './styles.scss';
+import 'highlight.js/scss/an-old-hope.scss';
+
 import UIkit from 'uikit';
-import 'uikit/dist/css/uikit-core.css';
-import 'highlight.js/styles/an-old-hope.min.css'
 import {marked} from 'marked';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
