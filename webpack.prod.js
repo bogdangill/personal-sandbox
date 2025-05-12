@@ -4,6 +4,7 @@ const {merge} = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {PurgeCSSPlugin} = require('purgecss-webpack-plugin');
 const glob = require('glob');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const PATHS = {
     build: path.join(__dirname, "build"),
@@ -28,6 +29,11 @@ module.exports = merge(common, {
             ]
         })
     ],
+    optimization: {
+        minimizer: [
+            new CssMinimizerPlugin(),
+        ]
+    },
     module: {
         rules: [
             {
