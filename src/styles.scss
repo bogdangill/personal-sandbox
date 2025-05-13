@@ -1,0 +1,38 @@
+@use '@shoelace-style/shoelace/dist/themes/light.css';
+@use '@shoelace-style/shoelace/dist/themes/dark.css';
+// Pico lightweight version
+@use "@picocss/pico/scss/pico" with (
+    $enable-semantic-container: true,
+    $enable-classes: false,
+    $modules: ("content/code": true,
+        "forms/input-color": false,
+        "forms/input-date": false,
+        "forms/input-file": false,
+        "forms/input-range": false,
+        "forms/input-search": false,
+        "components/accordion": false,
+        "components/card": false,
+        "components/dropdown": false,
+        "components/loading": false,
+        "components/modal": false,
+        "components/nav": false,
+        "components/progress": false,
+        "components/tooltip": false,
+        "utilities/accessibility": false,
+        "utilities/reduce-motion": false
+    )
+);
+
+.ps-grid {
+    display: flex;
+    flex-wrap: wrap;
+
+    &__cell {
+        flex-basis: 45%;
+        max-width: 50%;
+        flex-grow: 1;
+    }
+    &__divider {
+        height: auto;
+    }
+}

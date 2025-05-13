@@ -1,7 +1,6 @@
 const path = require('path');
 const common = require('./webpack.common');
 const {merge} = require('webpack-merge');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = merge(common, {
     mode: 'development',
@@ -11,18 +10,24 @@ module.exports = merge(common, {
         clean: true,
         publicPath: '/',
     },
-    plugins: [
-        new MiniCssExtractPlugin()
-    ],
     module: {
         rules: [
             {
-                test: /\.css$/i,
+                test: /\.scss$/i,
                 use: [
-                    MiniCssExtractPlugin.loader, //2 извлекает цсс в файл
-                    'css-loader' //1 превращает цсс в cjs
+                    'style-loader', //3 извлекает цсс в файл
+                    'css-loader', //2 превращает цсс в cjs
+                    'sass-loader' //1 сасс превращается в обычный цсс
                 ]
             },
         ]
-    }
+    },
+    devServer: {
+        static: {
+            directory: path.resolve(__dirname, 'dist'),
+        },
+        watchFiles: ['src/**/*.html'], // следить за html-файлами
+        hot: false, // отключить HMR для HTML, т.к. нужно перезагружать страницу
+        liveReload: true,
+    },
 });

@@ -20,6 +20,8 @@
     "marked": "^15.0.11",
     "mini-css-extract-plugin": "^2.9.2",
     "purgecss-webpack-plugin": "^7.0.2",
+    "sass": "^1.88.0",
+    "sass-loader": "^16.0.5",
     "style-loader": "^4.0.0",
     "webpack": "^5.99.8",
     "webpack-cli": "^6.0.1",
@@ -27,6 +29,7 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "bulma": "^1.0.4"
+    "@picocss/pico": "^2.1.1",
+    "@shoelace-style/shoelace": "^2.20.1"
   }
 }

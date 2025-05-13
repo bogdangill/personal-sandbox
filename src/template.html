@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" class="sl-theme-dark">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,28 +8,21 @@
 </head>
 <body>
     <main>
-        <section class="section">
-            <h1 class="title is-1 is-spaced">
-                Тестовая песочница
-            </h1>
-            <p class="subtitle">
-                Снизу будет выводиться описание текущей задачи и решение
-            </p>
-            <hr class="hr">
-            <div class="grid is-col-min-20 is-column-gap-8">
-                <article class="cell">
-                    <h2 class="title is-2">
-                        Задача
-                    </h2>
-                    <div class="content" id="task-description"></div>
-                </article>
-                <article class="cell">
-                    <h2 class="title is-2">
-                        Решение
-                    </h2>
-                    <pre id="task-solution"></pre>
-                </article>
-            </div>
+        <header>
+            <h1>Тестовая песочница</h1>
+            <p>Снизу будет выводиться описание текущей задачи и решение</p>
+        </header>
+        <sl-divider></sl-divider>
+        <section class="ps-grid">
+            <article class="ps-grid__cell">
+                <h2>Задача</h2>
+                <div id="task-description"></div>
+            </article>
+            <sl-divider class="ps-grid__divider" vertical></sl-divider>
+            <article class="ps-grid__cell">
+                <h2>Решение</h2>
+                <pre id="task-solution"></pre>
+            </article>
         </section>
     </main>
 </body>
