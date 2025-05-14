@@ -22,17 +22,49 @@
         "utilities/reduce-motion": false
     )
 );
+@use 'sass:math';
+
+@function calcFluidFontSize($f-min, $f-max, $v-min, $v-max) {
+    $k: math.div($f-max - $f-min, $v-max - $v-min);
+    $b: $f-min - $k * $v-min;
+
+    $b: $b * 1px;
+
+    @return calc(#{$k} * 100vw + #{$b});
+}
+
+html {
+    font-size: calcFluidFontSize(12, 18, 1023, 1920);
+}
+
+main {
+    padding: 0 !important;
+}
+
+.header {
+    &__text {
+        margin: 0;
+    }
+}
 
 .ps-grid {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 0;
 
     &__cell {
         flex-basis: 45%;
-        max-width: 50%;
+        max-width: 49%;
         flex-grow: 1;
+
+        padding-top: 1rem;
     }
     &__divider {
         height: auto;
     }
+}
+
+#task-description {
+    max-height: 70vh;
+    overflow-y: scroll;
 }
