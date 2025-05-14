@@ -4,6 +4,7 @@ const {merge} = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {PurgeCSSPlugin} = require('purgecss-webpack-plugin');
 const glob = require('glob');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const PATHS = {
     build: path.join(__dirname, "build"),
@@ -25,7 +26,8 @@ module.exports = merge(common, {
             paths: glob.sync(`${PATHS.build}/**/*`, { nodir: true }),
             safelist: [
                 /^hljs-/
-            ]
+            ],
+            variables: true //чищу от неиспользуемых переменных от разных тем фреймворков из под капота
         })
     ],
     module: {
@@ -38,6 +40,11 @@ module.exports = merge(common, {
                     'sass-loader' //1 сасс превращается в обычный цсс
                 ]
             },
+        ]
+    },
+    optimization: {
+        minimizer: [
+            new CssMinimizerPlugin(),
         ]
     },
 })
