@@ -14,6 +14,7 @@ module.exports = {
                     from: './src/training-tasks/*.md', 
                     to: 'training-tasks/[name][ext]', 
                 },
+                { from: './src/training-tasks/*.js', to: 'training-tasks/[name][ext]' },
                 {
                     from: path.resolve(__dirname, 'node_modules/@shoelace-style/shoelace/dist/assets'),
                     to: path.resolve(__dirname, 'build/shoelace/assets')
@@ -27,6 +28,11 @@ module.exports = {
                 test: /\.md$/,
                 use: ['html-loader', 'markdown-loader'],
             },
+            {
+                test: /\.js$/,
+                resourceQuery: /raw/,
+                type: 'asset/source'
+            }
         ],
     },
 }
