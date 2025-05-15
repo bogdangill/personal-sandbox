@@ -1,0 +1,30 @@
+@use 'sass:math';
+@use 'media' as *;
+
+@function calcFluidFontSize($f-min, $f-max, $v-min, $v-max) {
+    $k: math.div($f-max - $f-min, $v-max - $v-min);
+    $b: $f-min - $k * $v-min;
+
+    $b: $b * 1px;
+
+    @return calc(#{$k} * 100vw + #{$b});
+}
+
+@mixin container($max-width, $padding-x: 16px) {
+    $half-width: calc($max-width / 2);
+    width: 100%;
+    padding-left: $padding-x;
+    padding-right: $padding-x;
+
+    @include desktop-md {
+        padding-left: calc(50vw - $half-width);
+        padding-right: calc(50vw - $half-width);
+    }
+}
+
+@mixin color($color, $step) {
+    color: var(--sl-color-#{$color}-#{$step});
+}
+@mixin backgroundColor($color, $step) {
+    background-color: var(--sl-color-#{$color}-#{$step});
+}

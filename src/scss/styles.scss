@@ -1,0 +1,112 @@
+@use 'normalize';
+@use '@shoelace-style/shoelace/dist/themes/light.css';
+@use '@shoelace-style/shoelace/dist/themes/dark.css';
+@use 'media' as *;
+@use 'mixins' as *;
+
+html {
+    font-family: "Ubuntu", sans-serif;
+    font-optical-sizing: auto;
+    font-size: calcFluidFontSize(14, 20, 1023, 1920);
+    line-height: var(--sl-line-height-normal);
+}
+
+pre, code {
+    font-family: "Ubuntu Sans Mono", monospace;
+    font-size: var(--sl-font-size-small);
+}
+
+pre {
+    margin: 0;
+    padding-bottom: var(--sl-spacing-medium);
+}
+
+code {
+    @include backgroundColor(primary, 50);
+    @include color(primary, 800);
+    padding: var(--sl-spacing-2x-small);
+    border-radius: var(--sl-border-radius-large);
+    box-shadow: var(--sl-shadow-medium);
+}
+
+body {
+    @include backgroundColor(neutral, 0);
+    @include color(primary, 950);
+}
+
+.container {
+    @include container(1550px, 2rem);
+}
+
+.header {
+    padding-top: 1.3rem;
+    padding-bottom: 1.3rem;
+    @include container(1550px, 2rem);
+
+    &__title {
+        font-family: "Exile", system-ui;
+        @include color(primary, 800);
+    }
+    &__text {
+        margin: 0;
+    }
+}
+
+.ps-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+
+    &__cell {
+        flex-basis: 45%;
+        max-width: 49%;
+        flex-grow: 1;
+    }
+    &__title {
+        font-size: var(--sl-font-size-x-large);
+        letter-spacing: var(--sl-letter-spacing-loose);
+        margin: 0;
+        padding: var(--sl-spacing-medium) 0;
+    }
+    &__divider {
+        height: auto;
+    }
+}
+
+#task-description,
+#task-solution {
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+#task-description {
+    strong {
+        @include color(warning, 500);
+    }
+
+    h1, h2, h3, h4 {
+        letter-spacing: var(--sl-letter-spacing-dense);
+        margin-bottom: var(--sl-spacing-large);
+        margin-top: var(--sl-spacing-large);
+    }
+
+    p {
+        margin-bottom: var(--sl-spacing-small);
+    }
+
+    h1, h2 {
+        font-size: var(--sl-font-size-large);
+    }
+
+    h3, h4 {
+        font-size: var(--sl-font-size-medium);
+    }
+
+    code {
+        display: inline-block;
+    }
+}
+
+#task-solution {
+    line-height: var(--sl-line-height-dense);
+}

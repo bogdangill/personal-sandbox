@@ -1,0 +1,73 @@
+//mobile-first breakpoint system
+$tablet-sm: 767.98px;
+$tablet-md: 1023.98px;
+$laptop: 1199.98px;
+$desktop-sm: 1439.98px;
+$desktop-md: 1599.98px;
+$desktop-lg: 1919.98px;
+
+//планшеты
+@mixin tablet-sm {
+	@media (width > $tablet-sm){
+		@content;
+	}
+}
+@mixin tablet-sm-below {
+	@media (width <= $tablet-sm){
+		@content;
+	}
+}
+@mixin tablet-md {
+	@media (width > $tablet-md) {
+		@content;
+	}
+}
+@mixin tablet-md-below {
+	@media (width <= $tablet-md) {
+		@content;
+	}
+}
+
+//ноуты
+@mixin laptop {
+	@media (width > $laptop) {
+		@content;
+	}
+}
+@mixin laptop-below {
+	@media (width <= $laptop) {
+		@content;
+	}
+}
+
+//компы
+@mixin desktop-sm {
+	@media (width > $desktop-sm) {
+		@content;
+	}
+}
+@mixin desktop-sm-below {
+	@media (width <= $desktop-sm) {
+		@content;
+	}
+}
+@mixin desktop-md {
+	@media (width > $desktop-md) {
+		@content;
+	}
+}
+@mixin desktop-md-below {
+	@media (width <= $desktop-md) {
+		@content;
+	}
+}
+@mixin desktop-lg {
+	@media (width > $desktop-lg) {
+		@content;
+	}
+}
+@mixin desktop-lg-below {
+	@media (width <= $desktop-lg) {
+		@content;
+	}
+}

@@ -1,4 +1,4 @@
-import './styles.scss';
+import './scss/styles.scss';
 import 'highlight.js/scss/an-old-hope.scss';
 
 import {marked} from 'marked';

@@ -1,26 +1,29 @@
 <!DOCTYPE html>
-<html lang="ru" class="sl-theme-dark">
+<html lang="ru" class="sl-theme-light">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>my sandbox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exile&family=Ubuntu+Sans+Mono:wght@400..700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>🧪my sandbox</title>
 </head>
 <body>
     <header class="header">
         <h1 class="header__title">💀JSCrypt💀</h1>
         <p class="header__text">Снизу будет выводиться описание текущей задачи и решение</p>
     </header>
-    <main>
-        <sl-divider style="--spacing: 0;"></sl-divider>
+    <sl-divider style="--spacing: 0;"></sl-divider>
+    <main class="container">
         <section class="ps-grid">
             <article class="ps-grid__cell">
-                <h2>Задача</h2>
+                <h2 class="ps-grid__title">📝Задача</h2>
                 <div id="task-description"></div>
             </article>
             <sl-divider class="ps-grid__divider" vertical></sl-divider>
             <article class="ps-grid__cell">
-                <h2>Решение</h2>
+                <h2 class="ps-grid__title">💻Решение</h2>
                 <pre id="task-solution"></pre>
             </article>
         </section>
