@@ -34,23 +34,33 @@ code {
 body {
     @include backgroundColor(neutral, 50);
     @include color(primary, 950);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
 }
 
-.sl-theme-light {
-    body {
-        @include backgroundColor(neutral, 0);
-    }
+main {
+    overflow: hidden;
 }
 
 .container {
     @include container(1550px, 2rem);
 }
 
-.header {
-    padding-top: 1.3rem;
-    padding-bottom: 1.3rem;
+.header,
+.footer {
+    padding-top: var(--sl-spacing-large);
+    padding-bottom: var(--sl-spacing-large);
+    @include backgroundColor(neutral, 100);
     @include container(1550px, 2rem);
+}
 
+.footer {
+    padding-top: var(--sl-spacing-medium);
+    padding-bottom: var(--sl-spacing-medium);
+}
+
+.header {
     &__title {
         font-family: "Exile", system-ui;
         @include color(neutral, 800);
@@ -66,12 +76,32 @@ body {
     }
 }
 
+.footer {
+    display: flex;
+    justify-content: flex-end;
+
+    &__copyright {
+        font-family: "Ubuntu Sans Mono", monospace;
+        display: flex;
+        align-items: center;
+        gap: var(--sl-spacing-x-small);
+    }
+
+    &__logo {
+        @include color(violet, 600);
+        width: var(--sl-spacing-3x-large);
+        height: var(--sl-spacing-3x-large);
+    }
+}
+
 .ps-grid {
     display: flex;
-    flex-wrap: wrap;
+    height: 100%;
     margin-bottom: 0;
 
     &__cell {
+        display: grid;
+        grid-template-rows: auto 1fr;
         flex-basis: 45%;
         max-width: 49%;
         flex-grow: 1;
@@ -90,7 +120,7 @@ body {
 
 #task-description,
 #task-solution {
-    height: 70vh;
+    height: 100%;
     overflow: auto;
 }
 
