@@ -30,6 +30,8 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "@shoelace-style/shoelace": "^2.20.1"
+    "@shoelace-style/shoelace": "^2.20.1",
+    "resize-observer-polyfill": "^1.5.1",
+    "simplebar": "^6.3.1"
   }
 }

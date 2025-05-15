@@ -1,5 +1,8 @@
 import './scss/styles.scss';
 import 'highlight.js/scss/an-old-hope.scss';
+import SimpleBar from 'simplebar';
+import ResizeObserver from 'resize-observer-polyfill';
+window.ResizeObserver = ResizeObserver;
 
 import {marked} from 'marked';
 import hljs from 'highlight.js/lib/core';
@@ -9,6 +12,9 @@ hljs.registerLanguage('javascript', javascript);
 //веб-компоненты Шнурков
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/button/button';
+
+const taskDescription = document.getElementById('task-description');
+const taskSolution = document.getElementById('task-solution');
 
 async function loadTask(taskName) {
     try {
@@ -20,11 +26,16 @@ async function loadTask(taskName) {
 
         const highlightedCode = hljs.highlight(solutionCode$, { language: 'javascript' }).value;
     
-        document.getElementById('task-description').innerHTML = marked.parse(markdown$);
-        document.getElementById('task-solution').innerHTML = `${highlightedCode}`;
+        taskDescription.innerHTML = marked.parse(markdown$);
+        taskSolution.innerHTML = `${highlightedCode}`;
+
+        new SimpleBar(taskDescription, {
+            scrollbarMinSize: 20
+        });
+        new SimpleBar(taskSolution);
     } catch (error) {
         console.error('Ошибка загрузки задачи:', error);
-        document.getElementById('task-solution').innerText = `Ошибка: ${error.message}`;
+        taskSolution.innerText = `Ошибка: ${error.message}`;
     }
 }
 
