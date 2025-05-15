@@ -28,3 +28,10 @@
 @mixin backgroundColor($color, $step) {
     background-color: var(--sl-color-#{$color}-#{$step});
 }
+@mixin gradient($color) {
+    background-image: linear-gradient(-131deg, 
+        var(--sl-color-#{$color}-50) 0%, 
+        var(--sl-color-#{$color}-500) 50%,
+        var(--sl-color-#{$color}-50) 100%, 
+    );
+}
