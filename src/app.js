@@ -11,59 +11,14 @@ hljs.registerLanguage('javascript', javascript);
 
 //веб-компоненты Шнурков
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
-import '@shoelace-style/shoelace/dist/components/button/button';
-import '@shoelace-style/shoelace/dist/components/icon/icon';
+import { definePreferedTheme, renderThemeSwitcher } from './js/theme.js';
 
 const taskDescription = document.getElementById('task-description');
 const taskSolution = document.getElementById('task-solution');
-const root = document.querySelector('html');
-
-const STORAGE_THEME_KEY = 'is-dark-theme';
-const DARK_THEME_CLASS = 'sl-theme-dark';
-
-function switchDarkTheme() {
-    if (localStorage.getItem(STORAGE_THEME_KEY)) {
-        root.classList.remove(DARK_THEME_CLASS);
-        localStorage.removeItem(STORAGE_THEME_KEY);
-    } else {
-        root.classList.add(DARK_THEME_CLASS);
-        localStorage.setItem(STORAGE_THEME_KEY, true);
-    }
-}
 
 function initApp() {
-    if (window.matchMedia('(prefers-color-scheme:dark)')?.matches) {
-        localStorage.setItem(STORAGE_THEME_KEY, true);
-        root.classList.add(DARK_THEME_CLASS);
-    }
-
+    definePreferedTheme();
     renderThemeSwitcher();
-}
-
-function renderThemeSwitcher() {
-    const themeSwitcherContainer = document.getElementById('theme-switcher');
-    const switchIcon = () => localStorage.getItem(STORAGE_THEME_KEY) ? 'cloud-sun' : 'cloud-moon';
-
-    const themeSwitcherIcon = Object.assign(document.createElement('sl-icon'), 
-        {
-            name: switchIcon(),
-            label: 'Сменить тему'
-        }
-    );
-    const themeSwitcherButton = Object.assign(document.createElement('sl-button'),
-        {
-            circle: true,
-            size: 'medium'
-        }
-    );
-
-    themeSwitcherContainer.append(themeSwitcherButton);
-    themeSwitcherButton.append(themeSwitcherIcon);
-    
-    themeSwitcherButton.addEventListener('click', () => {
-        switchDarkTheme();
-        themeSwitcherIcon.name = switchIcon();
-    })
 }
 
 async function loadTask(taskName) {

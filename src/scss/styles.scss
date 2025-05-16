@@ -102,7 +102,7 @@ main {
 
     &__cell {
         display: grid;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto 1fr;
         flex-basis: 45%;
         max-width: 49%;
         flex-grow: 1;
