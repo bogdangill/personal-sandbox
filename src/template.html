@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='75' font-size='90' text-anchor='middle'>🧪</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exile&family=Ubuntu+Sans+Mono:wght@400..700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exile&family=Ubuntu+Sans+Mono:wght@400..700&display=swap" rel="stylesheet">
     <title>Песочница</title>
 </head>
 <body>
@@ -21,21 +21,23 @@
         </h1>
         <p class="header__text">Снизу будет выводиться описание текущей задачи и решение</p>
     </header>
-    <sl-divider style="--spacing: 0; --width: var(--sl-spacing-2x-small);"></sl-divider>
+    <sl-divider style="--spacing: 0;"></sl-divider>
     <main class="container">
         <section class="ps-grid">
             <article class="ps-grid__cell">
                 <h2 class="ps-grid__title">📝Задача</h2>
+                <sl-divider style="--spacing: 0;"></sl-divider>
                 <div id="task-description"></div>
             </article>
-            <sl-divider class="ps-grid__divider" style="--width: var(--sl-spacing-2x-small);" vertical></sl-divider>
+            <sl-divider class="ps-grid__divider" style="--spacing: 0;" vertical></sl-divider>
             <article class="ps-grid__cell">
                 <h2 class="ps-grid__title">💻Решение</h2>
+                <sl-divider style="--spacing: 0;"></sl-divider>
                 <pre id="task-solution"></pre>
             </article>
         </section>
     </main>
-    <sl-divider style="--spacing: 0; --width: var(--sl-spacing-2x-small);"></sl-divider>
+    <sl-divider style="--spacing: 0;"></sl-divider>
     <footer class="footer">
         <div class="footer__theme-switcher" id="theme-switcher">
         </div>

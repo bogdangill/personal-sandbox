@@ -7,7 +7,7 @@
 @use 'mixins' as *;
 
 html {
-    font-family: "Ubuntu", sans-serif;
+    font-family: "Ubuntu Sans Mono", monospace;
     font-optical-sizing: auto;
     font-size: calcFluidFontSize(14, 20, 1023, 1920);
     line-height: var(--sl-line-height-normal);
@@ -89,7 +89,7 @@ main {
     }
 
     &__logo {
-        @include color(violet, 600);
+        @include color(neutral, 700);
         width: var(--sl-spacing-3x-large);
         height: var(--sl-spacing-3x-large);
     }
@@ -108,13 +108,11 @@ main {
         flex-grow: 1;
     }
     &__title {
-        text-align: center;
         font-size: var(--sl-font-size-x-large);
         letter-spacing: var(--sl-letter-spacing-loose);
         margin: 0;
-        padding: var(--sl-spacing-medium) 0;
+        padding: var(--sl-spacing-medium);
         text-shadow: 0px 3px 3px var(--sl-color-neutral-50);
-        background-image: linear-gradient(to top, var(--sl-color-neutral-50) 0%, var(--sl-color-neutral-200) 100%);
     }
     &__divider {
         height: auto;
@@ -139,17 +137,21 @@ main {
 }
 
 #task-description {
+    padding-right: var(--sl-spacing-medium);
+
     strong {
         @include color(warning, 500);
     }
 
     h1, h2, h3, h4 {
+        font-weight: var(--sl-font-weight-semibold);
         letter-spacing: var(--sl-letter-spacing-dense);
         margin-bottom: var(--sl-spacing-large);
         margin-top: var(--sl-spacing-large);
     }
 
     p {
+        font-weight: var(--sl-font-weight-light);
         margin-bottom: var(--sl-spacing-small);
     }
 
@@ -167,5 +169,6 @@ main {
 }
 
 #task-solution {
+    padding-left: var(--sl-spacing-medium);
     line-height: var(--sl-line-height-dense);
 }
