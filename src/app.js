@@ -18,49 +18,53 @@ const taskDescription = document.getElementById('task-description');
 const taskSolution = document.getElementById('task-solution');
 const root = document.querySelector('html');
 
-function checkUserThemePreference() {
-    if (window?.matchMedia?.('(prefers-color-scheme:dark)')?.matches) {
-        return 'dark';
+const STORAGE_THEME_KEY = 'is-dark-theme';
+const DARK_THEME_CLASS = 'sl-theme-dark';
+
+function switchDarkTheme() {
+    if (localStorage.getItem(STORAGE_THEME_KEY)) {
+        root.classList.remove(DARK_THEME_CLASS);
+        localStorage.removeItem(STORAGE_THEME_KEY);
     } else {
-        return 'light';
+        root.classList.add(DARK_THEME_CLASS);
+        localStorage.setItem(STORAGE_THEME_KEY, true);
     }
 }
 
-function switchTheme() {
-    if (root.classList.contains(`sl-theme-dark`)) {
-        root.classList.remove(`sl-theme-dark`)
-        root.classList.add(`sl-theme-light`);
-    } else {
-        root.classList.remove(`sl-theme-light`)
-        root.classList.add(`sl-theme-dark`);
+function initApp() {
+    if (window.matchMedia('(prefers-color-scheme:dark)')?.matches) {
+        localStorage.setItem(STORAGE_THEME_KEY, true);
+        root.classList.add(DARK_THEME_CLASS);
     }
+
+    renderThemeSwitcher();
 }
 
-function renderThemeSwitcher(theme = 'light') {
+function renderThemeSwitcher() {
     const themeSwitcherContainer = document.getElementById('theme-switcher');
-    const themeSwitcherIcon = Object.assign(document.createElement('sl-icon'), {
-        name: theme === 'light' ? 'cloud-moon' : 'cloud-sun',
-        label: 'Сменить тему'
-    });
+    const switchIcon = () => localStorage.getItem(STORAGE_THEME_KEY) ? 'cloud-sun' : 'cloud-moon';
+
+    const themeSwitcherIcon = Object.assign(document.createElement('sl-icon'), 
+        {
+            name: switchIcon(),
+            label: 'Сменить тему'
+        }
+    );
     const themeSwitcherButton = Object.assign(document.createElement('sl-button'),
         {
             circle: true,
             size: 'medium'
         }
     );
+
     themeSwitcherContainer.append(themeSwitcherButton);
     themeSwitcherButton.append(themeSwitcherIcon);
     
     themeSwitcherButton.addEventListener('click', () => {
-        switchTheme()
+        switchDarkTheme();
+        themeSwitcherIcon.name = switchIcon();
     })
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const theme = checkUserThemePreference();
-    root.classList.add(`sl-theme-${theme}`);
-    renderThemeSwitcher(theme);
-})
 
 async function loadTask(taskName) {
     try {
@@ -87,3 +91,5 @@ async function loadTask(taskName) {
 
 //пока так, потом сделаю выбор задач через интерфейс
 loadTask('task-2');
+
+document.addEventListener('DOMContentLoaded', initApp);
