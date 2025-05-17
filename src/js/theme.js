@@ -38,10 +38,10 @@ export function definePreferedTheme() {
 
 export function renderThemeSwitcher() {
     const themeSwitcherContainer = document.getElementById('theme-switcher');
-    const isThemeDark = localStorage.getItem(THEME_KEY_CURRENT) === 'dark';
     
-    const switchIcon = () => isThemeDark ? 'cloud-sun' : 'cloud-moon';
-    const switchHint = () => isThemeDark ? 'Включить светлую тему' : 'Включить темную тему';
+    const isThemeDark = () => localStorage.getItem(THEME_KEY_CURRENT) === 'dark';
+    const switchIcon = () => isThemeDark() ? 'cloud-sun' : 'cloud-moon';
+    const switchHint = () => isThemeDark() ? 'Включить светлую тему' : 'Включить темную тему';
 
     const themeSwitcherTooltip = Object.assign(document.createElement('sl-tooltip'),
         {
