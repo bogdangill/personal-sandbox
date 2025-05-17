@@ -2,30 +2,46 @@ import '@shoelace-style/shoelace/dist/components/button/button';
 import '@shoelace-style/shoelace/dist/components/icon/icon';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip';
 
-const STORAGE_THEME_KEY = 'is-dark-theme';
-const DARK_THEME_CLASS = 'sl-theme-dark';
+const THEME_KEY_PREFERED = 'prefered-theme';
+const THEME_KEY_CURRENT = 'current-theme';
+const THEME_CLASS_DARK = 'sl-theme-dark';
 
 function switchDarkTheme() {
-    if (localStorage.getItem(STORAGE_THEME_KEY)) {
-        document.documentElement.classList.remove(DARK_THEME_CLASS);
-        localStorage.removeItem(STORAGE_THEME_KEY);
+    if (localStorage.getItem(THEME_KEY_CURRENT) === 'dark') {
+        document.documentElement.classList.remove(THEME_CLASS_DARK);
+        localStorage.setItem(THEME_KEY_CURRENT, 'light');
     } else {
-        document.documentElement.classList.add(DARK_THEME_CLASS);
-        localStorage.setItem(STORAGE_THEME_KEY, true);
+        document.documentElement.classList.add(THEME_CLASS_DARK);
+        localStorage.setItem(THEME_KEY_CURRENT, 'dark');
     }
 }
 
 export function definePreferedTheme() {
-    if (window.matchMedia('(prefers-color-scheme:dark)')?.matches) {
-        localStorage.setItem(STORAGE_THEME_KEY, true);
-        document.documentElement.classList.add(DARK_THEME_CLASS);
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme:dark)')?.matches;
+    const currentTheme = localStorage.getItem(THEME_KEY_CURRENT);
+
+    if (currentTheme === 'dark') {
+        document.documentElement.classList.add(THEME_CLASS_DARK);
+    }
+
+    if (prefersDarkMode) {
+        localStorage.setItem(THEME_KEY_PREFERED, 'dark');
+    } else {
+        localStorage.setItem(THEME_KEY_PREFERED, 'light');
+    }
+
+    if (prefersDarkMode && !currentTheme) {
+        localStorage.setItem(THEME_KEY_CURRENT, 'dark');
+        document.documentElement.classList.add(THEME_CLASS_DARK);
     }
 }
 
 export function renderThemeSwitcher() {
     const themeSwitcherContainer = document.getElementById('theme-switcher');
-    const switchIcon = () => localStorage.getItem(STORAGE_THEME_KEY) ? 'cloud-sun' : 'cloud-moon';
-    const switchHint = () => localStorage.getItem(STORAGE_THEME_KEY) ? 'Включить светлую тему' : 'Включить темную тему';
+    const isThemeDark = localStorage.getItem(THEME_KEY_CURRENT) === 'dark';
+    
+    const switchIcon = () => isThemeDark ? 'cloud-sun' : 'cloud-moon';
+    const switchHint = () => isThemeDark ? 'Включить светлую тему' : 'Включить темную тему';
 
     const themeSwitcherTooltip = Object.assign(document.createElement('sl-tooltip'),
         {
