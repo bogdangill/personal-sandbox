@@ -13,12 +13,36 @@ hljs.registerLanguage('javascript', javascript);
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import { definePreferedTheme, renderThemeSwitcher } from './js/theme.js';
 
+import '@shoelace-style/shoelace/dist/components/drawer/drawer';
+import '@shoelace-style/shoelace/dist/components/button/button';
+
+function renderTasksDrawer() {
+    const tasksDrawerTriggerContainer = document.getElementById('tasks-drawer');
+    const body = document.querySelector('body');
+    
+    const tasksDrawer = Object.assign(document.createElement('sl-drawer'), {
+        label: 'Список задач',
+        placement: 'start'
+    });
+
+    body.append(tasksDrawer);
+
+    const tasksDrawerTrigger = Object.assign(document.createElement('sl-button'), {
+        caret: true,
+        size: 'small'
+    });
+    tasksDrawerTrigger.textContent = 'Показать остальные';
+    tasksDrawerTrigger.addEventListener('click', () => tasksDrawer.show());
+    tasksDrawerTriggerContainer.append(tasksDrawerTrigger);
+}
+
 const taskDescription = document.getElementById('task-description');
 const taskSolution = document.getElementById('task-solution');
 
 function initApp() {
     definePreferedTheme();
     renderThemeSwitcher();
+    renderTasksDrawer();
 }
 
 async function loadTask(taskName) {

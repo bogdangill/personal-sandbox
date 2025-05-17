@@ -25,13 +25,18 @@
     <main class="container">
         <section class="ps-grid">
             <article class="ps-grid__cell">
-                <h2 class="ps-grid__title">📝Задача</h2>
+                <header class="ps-grid__header">
+                    <h2 class="ps-grid__title">📝Задача</h2>
+                    <div id="tasks-drawer"></div>
+                </header>
                 <sl-divider style="--spacing: 0;"></sl-divider>
                 <div id="task-description"></div>
             </article>
             <sl-divider class="ps-grid__divider" style="--spacing: 0;" vertical></sl-divider>
             <article class="ps-grid__cell">
-                <h2 class="ps-grid__title">💻Решение</h2>
+                <header class="ps-grid__header">
+                    <h2 class="ps-grid__title">💻Решение</h2>
+                </header>
                 <sl-divider style="--spacing: 0;"></sl-divider>
                 <pre id="task-solution"></pre>
             </article>
