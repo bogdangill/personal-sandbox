@@ -217,3 +217,8 @@ main {
     padding-left: var(--sl-spacing-medium);
     line-height: var(--sl-line-height-dense);
 }
+
+.sl-toast-stack {
+    left: 0;
+    right: auto;
+}

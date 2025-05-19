@@ -1,6 +1,8 @@
 import '@shoelace-style/shoelace/dist/components/input/input';
 import '@shoelace-style/shoelace/dist/components/textarea/textarea';
 import '@shoelace-style/shoelace/dist/components/button/button';
+import '@shoelace-style/shoelace/dist/components/alert/alert';
+import '@shoelace-style/shoelace/dist/components/icon/icon';
 
 function Task(id, name, text, code = null, startDate, endDate = startDate, importance = null) {
     this.id = id;
@@ -25,7 +27,7 @@ export function renderTaskDescriptionForm() {
     
     const taskNameInput = Object.assign(document.createElement('sl-input'), {
         label: 'Название задачи',
-        placeholder: 'e.g. Bubble sort', //можно каждый раз генерировать рандомное название задачи с помощью Faker.js
+        placeholder: 'e.g. Bubble sort',
         clearable: true,
     });
     const taskTextarea = Object.assign(document.createElement('sl-textarea'), {
@@ -34,9 +36,9 @@ export function renderTaskDescriptionForm() {
         helpText: 'p.s. описание можно оформить в формате markdown - тогда после сохранения оформленный текст будет выводиться обернутый html-тегами',
     });
     const submitButton = Object.assign(document.createElement('sl-button'), {
-        variant: 'success',
+        variant: 'primary',
         type: 'submit',
-        disabled: true,
+        disabled: true
     });
     submitButton.innerText = "Сохранить";
     submitButton.style = "width: 100%";
@@ -44,4 +46,43 @@ export function renderTaskDescriptionForm() {
     taskDescriptionForm.append(taskNameInput);
     taskDescriptionForm.append(taskTextarea);
     taskDescriptionForm.append(submitButton);
+
+    taskTextarea.addEventListener('sl-input', () => {
+        submitButton.disabled = taskTextarea.value.length <= 0;
+    });
+
+    function validateForm() {
+        if (!taskTextarea.value.trim()) {
+            notify('Отсутствует текст описания задачи!');
+        } else if (taskTextarea.value.length <= 10) {
+            notify('Текст описания должен быть больше 10 символов');
+        } else {
+            notify('Описание успешно сохранено!', 'success', 'check-square', Infinity);
+        }
+    }
+    function escapeHtml(html) {
+        const div = document.createElement('div');
+        div.textContent = html;
+        return div.innerHTML;
+    }
+    function notify(message, variant = 'warning', icon = 'exclamation-triangle', duration = 3000) {
+        const formAlert = Object.assign(document.createElement('sl-alert'), {
+            duration: duration,
+            closable: true,
+            countdown: 'rtl',
+            variant: variant,
+            innerHTML: `
+                <sl-icon name="${icon}" slot="icon"></sl-icon>
+                ${escapeHtml(message)}
+            `
+        });
+
+        document.body.append(formAlert);
+        return formAlert.toast();
+    }
+
+    taskDescriptionForm.addEventListener('submit', (evt) => {
+        evt.preventDefault();
+        validateForm();
+    });
 }
