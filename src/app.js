@@ -16,34 +16,30 @@ import { definePreferedTheme, renderThemeSwitcher } from './js/theme.js';
 import '@shoelace-style/shoelace/dist/components/drawer/drawer';
 import '@shoelace-style/shoelace/dist/components/button/button';
 
-function renderTasksDrawer() {
-    const tasksDrawerTriggerContainer = document.getElementById('tasks-drawer');
-    const body = document.querySelector('body');
+import { renderTaskDescriptionForm } from './js/tasks';
+
+// function renderTasksDrawer() {
+//     const tasksDrawerTriggerContainer = document.getElementById('tasks-drawer');
+//     const body = document.querySelector('body');
     
-    const tasksDrawer = Object.assign(document.createElement('sl-drawer'), {
-        label: 'Список задач',
-        placement: 'start'
-    });
+//     const tasksDrawer = Object.assign(document.createElement('sl-drawer'), {
+//         label: 'Список задач',
+//         placement: 'start'
+//     });
 
-    body.append(tasksDrawer);
+//     body.append(tasksDrawer);
 
-    const tasksDrawerTrigger = Object.assign(document.createElement('sl-button'), {
-        caret: true,
-        size: 'small'
-    });
-    tasksDrawerTrigger.textContent = 'Показать остальные';
-    tasksDrawerTrigger.addEventListener('click', () => tasksDrawer.show());
-    tasksDrawerTriggerContainer.append(tasksDrawerTrigger);
-}
+//     const tasksDrawerTrigger = Object.assign(document.createElement('sl-button'), {
+//         caret: true,
+//         size: 'small'
+//     });
+//     tasksDrawerTrigger.textContent = 'Показать остальные';
+//     tasksDrawerTrigger.addEventListener('click', () => tasksDrawer.show());
+//     tasksDrawerTriggerContainer.append(tasksDrawerTrigger);
+// }
 
 const taskDescription = document.getElementById('task-description');
 const taskSolution = document.getElementById('task-solution');
-
-function initApp() {
-    definePreferedTheme();
-    renderThemeSwitcher();
-    renderTasksDrawer();
-}
 
 async function loadTask(taskName) {
     try {
@@ -52,7 +48,12 @@ async function loadTask(taskName) {
     
         const solution$ = await fetch(`./training-tasks/${taskName}.js`);
         const solutionCode$ = await solution$.text();
+        
+        tasks.push(new TaskModel('task1', markdown$, solutionCode$));
 
+        localStorage.setItem('tasks-data', JSON.stringify(tasks));
+
+        //-------------------------------------------------------------------------------------
         const highlightedCode = hljs.highlight(solutionCode$, { language: 'javascript' }).value;
     
         taskDescription.innerHTML = marked.parse(markdown$);
@@ -69,6 +70,13 @@ async function loadTask(taskName) {
 }
 
 //пока так, потом сделаю выбор задач через интерфейс
-loadTask('task-2');
+// loadTask('task-1');
+
+function initApp() {
+    definePreferedTheme();
+    renderThemeSwitcher();
+    renderTaskDescriptionForm();
+    // renderTasksDrawer();
+}
 
 document.addEventListener('DOMContentLoaded', initApp);

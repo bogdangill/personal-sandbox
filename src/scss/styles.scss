@@ -203,6 +203,16 @@ main {
     }
 }
 
+#task-description-form {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--sl-spacing-medium);
+    height: 100%;
+    padding-top: var(--sl-spacing-medium);
+    padding-bottom: var(--sl-spacing-medium);
+    margin-left: var(--sl-spacing-medium);
+}
+
 #task-solution {
     padding-left: var(--sl-spacing-medium);
     line-height: var(--sl-line-height-dense);
