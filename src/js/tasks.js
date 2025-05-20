@@ -40,15 +40,29 @@ export function renderTaskDescriptionForm() {
         type: 'submit',
         disabled: true
     });
+    const resetButton = Object.assign(document.createElement('sl-button'), {
+        variant: 'neutral',
+    });
+
     submitButton.innerText = "Сохранить";
-    submitButton.style = "width: 100%";
+    resetButton.innerText = "Сбросить";
+
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.classList.add('form-buttons');
 
     taskDescriptionForm.append(taskNameInput);
     taskDescriptionForm.append(taskTextarea);
-    taskDescriptionForm.append(submitButton);
+    taskDescriptionForm.append(buttonWrapper);
+    buttonWrapper.append(submitButton);
+    buttonWrapper.append(resetButton);
 
     taskTextarea.addEventListener('sl-input', () => {
         submitButton.disabled = taskTextarea.value.length <= 0;
+    });
+    resetButton.addEventListener('click', () => {
+        taskNameInput.value = '';
+        taskTextarea.value = '';
+        submitButton.disabled = true;
     });
 
     function validateForm() {
