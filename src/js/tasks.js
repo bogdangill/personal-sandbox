@@ -13,9 +13,8 @@ function Task(id, name, text, code = null, startDate, endDate = startDate, impor
     this.endDate = endDate;
     this.importance = importance;
 }
-
-const currentTask = {};
-const tasksData = [];
+let currentTask = {};
+const tasksData = JSON.parse(localStorage.getItem('data')) || [];
 
 export function renderTaskDescriptionForm() {
     const taskDescription = document.getElementById('task-description');
@@ -59,19 +58,33 @@ export function renderTaskDescriptionForm() {
     taskTextarea.addEventListener('sl-input', () => {
         submitButton.disabled = taskTextarea.value.length <= 0;
     });
-    resetButton.addEventListener('click', () => {
+    resetButton.addEventListener('click', clearFormInputs);
+
+    function clearFormInputs() {
         taskNameInput.value = '';
         taskTextarea.value = '';
         submitButton.disabled = true;
-    });
+    }
+    function createTaskDescription(name, text) {
+        const date = new Date();
+        const id = Date.now();
+        const 
+            day = date.getDate(),
+            month = date.getMonth() + 1,
+            year = date.getFullYear(),
+            hours = date.getHours(),
+            minutes = date.getMinutes();
+        const creationDate = `${day}.${month}.${year} ${hours}:${minutes}`;
 
+        return new Task(id, name, text, null, creationDate);
+    }
     function validateForm() {
         if (!taskTextarea.value.trim()) {
             notify('Отсутствует текст описания задачи!');
         } else if (taskTextarea.value.length <= 10) {
             notify('Текст описания должен быть больше 10 символов');
         } else {
-            notify('Описание успешно сохранено!', 'success', 'check-square', Infinity);
+            return true;
         }
     }
     function escapeHtml(html) {
@@ -97,6 +110,13 @@ export function renderTaskDescriptionForm() {
 
     taskDescriptionForm.addEventListener('submit', (evt) => {
         evt.preventDefault();
-        validateForm();
+
+        if (validateForm()) {
+            currentTask = createTaskDescription(taskNameInput.value, taskTextarea.value);
+            tasksData.push(currentTask);
+            localStorage.setItem('data', JSON.stringify(tasksData));
+            notify('Описание успешно сохранено!', 'success', 'check-square');
+            clearFormInputs();
+        }
     });
 }
