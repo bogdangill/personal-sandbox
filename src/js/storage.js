@@ -33,30 +33,37 @@ const storageConfig = {
 
 export const storageManager = {
     get(entity) {
-        const config = storageConfig[entity];
-        if (!config) throw new Error(`Unknown storage entity: ${entity}`);
-
-        const storage = config.storage === 'session'
-            ? sessionStorage
-            : localStorage;
-
+        const config = this._getConfig(entity);
+        const storage = this._getStorage(config.storage);
         const data = storage.getItem(config.key);
+
         if (typeof data !== 'string') data = JSON.parse(data);
 
         return data || null;
     },
-
     set(entity, data) {
-        const config = storageConfig[entity];
-        if (!config) throw new Error(`Unknown storage entity: ${entity}`);
-
-        const storage = config.storage === 'session'
-            ? sessionStorage
-            : localStorage;
+        const config = this._getConfig(entity);
+        const storage = this._getStorage(config.storage);
 
         if (typeof data !== 'string') data = JSON.stringify(data);
 
         storage.setItem(config.key, data);
-        eventBus.dispatch(`${config.key}-updated`);
+        eventBus.dispatch(this._getEventName(entity, 'updated'));
     },
+    //хук для отлова события обновления Storage
+    onUpdate(entity, cb) {
+        eventBus.listen(this._getEventName(entity, 'updated'), cb);
+    },
+    _getConfig(entity) {
+        const config = storageConfig[entity];
+        if (!config) throw new Error(`Unknown storage entity: ${entity}`);
+        return config;
+    },
+    _getStorage(type) {
+        return type === 'session' ? sessionStorage : localStorage;
+    },
+    _getEventName(entity, suffix) {
+        const config = this._getConfig(entity);
+        return `${config.key}-${suffix}`;
+    }
 }
