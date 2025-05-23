@@ -1,3 +1,5 @@
+import { eventBus } from "./eventBus";
+
 export const storageEntities = Object.freeze({
     DESCRIPTION_FORM_DATA: 'descriptionFormData',
     CURRENT_TASK_DATA: 'currentTaskData',
@@ -39,7 +41,9 @@ export const storageManager = {
             : localStorage;
 
         const data = storage.getItem(config.key);
-        return data ? JSON.parse(data) : null;
+        if (typeof data !== 'string') data = JSON.parse(data);
+
+        return data || null;
     },
 
     set(entity, data) {
@@ -50,7 +54,9 @@ export const storageManager = {
             ? sessionStorage
             : localStorage;
 
-        storage.setItem(config.key, JSON.stringify(data));
-        eventBus.dispatch(`${config.key}-updated`, data);
+        if (typeof data !== 'string') data = JSON.stringify(data);
+
+        storage.setItem(config.key, data);
+        eventBus.dispatch(`${config.key}-updated`);
     },
 }
