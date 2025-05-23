@@ -28,3 +28,29 @@ const storageConfig = {
         storage: 'local'
     }
 };
+
+export const storageManager = {
+    get(entity) {
+        const config = storageConfig[entity];
+        if (!config) throw new Error(`Unknown storage entity: ${entity}`);
+
+        const storage = config.storage === 'session'
+            ? sessionStorage
+            : localStorage;
+
+        const data = storage.getItem(config.key);
+        return data ? JSON.parse(data) : null;
+    },
+
+    set(entity, data) {
+        const config = storageConfig[entity];
+        if (!config) throw new Error(`Unknown storage entity: ${entity}`);
+
+        const storage = config.storage === 'session'
+            ? sessionStorage
+            : localStorage;
+
+        storage.setItem(config.key, JSON.stringify(data));
+        eventBus.dispatch(`${config.key}-updated`, data);
+    },
+}
