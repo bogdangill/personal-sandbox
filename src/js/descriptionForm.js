@@ -2,6 +2,7 @@ import '@shoelace-style/shoelace/dist/components/input/input';
 import '@shoelace-style/shoelace/dist/components/textarea/textarea';
 import '@shoelace-style/shoelace/dist/components/button/button';
 import { notify } from './helpers';
+import { storageEntities, storageManager } from './storage';
 
 //фабрика элементов формы из компонентов Shoelace
 function createTaskNameInput() {
@@ -116,7 +117,7 @@ const taskDescriptionFormManager = {
                 data[key] = val
             });
 
-            sessionStorage.setItem('description-form-data', JSON.stringify(data));
+            storageManager.set(storageEntities.DESCRIPTION_FORM_DATA, data);
             this.formElement.reset();
 
             setTimeout(() => notify('Описание успешно сохранено!', 'success', 'check-square'), 500);
