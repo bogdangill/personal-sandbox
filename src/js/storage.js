@@ -32,6 +32,11 @@ const storageConfig = {
 };
 
 export const storageManager = {
+    /**
+     * забирает данные по ключу из Storage
+     * @param {storageEntities} entity - название ключа из Storage
+     * @param {string | object} data
+     */
     get(entity) {
         const config = this._getConfig(entity);
         const storage = this._getStorage(config.storage);
@@ -41,6 +46,11 @@ export const storageManager = {
 
         return data || null;
     },
+    /**
+     * устанавливает значение ключа в Storage
+     * @param {storageEntities} entity - название ключа из Storage
+     * @param {string | object} data
+     */
     set(entity, data) {
         const config = this._getConfig(entity);
         const storage = this._getStorage(config.storage);
@@ -50,7 +60,10 @@ export const storageManager = {
         storage.setItem(config.key, data);
         eventBus.dispatch(this._getEventName(entity, 'updated'));
     },
-    //хук для отлова события обновления Storage
+    /**
+     * хук для отлова события обновления Storage
+     * @param {storageEntities} entity - название ключа из Storage
+     */
     onUpdate(entity, cb) {
         eventBus.listen(this._getEventName(entity, 'updated'), cb);
     },
