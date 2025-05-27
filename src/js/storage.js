@@ -47,7 +47,7 @@ export const storageManager = {
         return data || null;
     },
     /**
-     * устанавливает значение ключа в Storage
+     * устанавливает значение ключа в Storage и публикует соответствующее ему событие
      * @param {storageEntities} entity - название ключа из Storage
      * @param {string | object} data
      */
@@ -61,8 +61,9 @@ export const storageManager = {
         eventBus.dispatch(this._getEventName(entity, 'updated'));
     },
     /**
-     * хук для отлова события обновления Storage
+     * хук для отлова опубликованного события обновления Storage
      * @param {storageEntities} entity - название ключа из Storage
+     * @param {function} cb - коллбэк-функция, которая триггерится во время события
      */
     onUpdate(entity, cb) {
         eventBus.listen(this._getEventName(entity, 'updated'), cb);
