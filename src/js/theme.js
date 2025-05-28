@@ -1,7 +1,7 @@
 import '@shoelace-style/shoelace/dist/components/button/button';
 import '@shoelace-style/shoelace/dist/components/icon/icon';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip';
-import { storageEntities, storageManager } from './storage';
+import { storageEntities, storageManager } from './storageService';
 
 const THEME_CLASS_DARK = 'sl-theme-dark';
 
