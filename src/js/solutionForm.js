@@ -9,27 +9,32 @@ const taskSolutionFormView = {
     submitButton: UIComponentFactory.createButton('success', 'Сохранить', true),
     _isMounted: false,
 
-    appendChildren() {
-        if (this._isMounted) return; //избегаю повторного монтирования
-        this.root.append(this.textarea);
-        this.root.append(UIComponentFactory.createFormButtons(this.executeButton, this.saveButton));
-        this._isMounted = true;
-    },
     mount(containerSelector) {
         const container = document.querySelector(containerSelector);
-        this.appendChildren();
+        this._appendChildren();
         container.append(this.root);
     },
     unmount() {
         if (!this._isMounted) return;
         this.root.remove();
         this._isMounted = false;
-    }
+    },
+    _appendChildren() {
+        if (this._isMounted) return; //избегаю повторного монтирования
+        this.root.append(this.textarea);
+        this.root.append(UIComponentFactory.createFormButtons(this.executeButton, this.saveButton));
+        this._isMounted = true;
+    },
 }
 
 export const taskSolutionFormController = {
     form: taskSolutionFormView,
     formElement: taskSolutionFormView.root,
+
+    init(selector) {
+        this.form.mount(selector);
+        this.bindEvents();
+    },
     /**
      * Отключает кнопку сохранения, если поле с решением пустое.
      */
@@ -53,6 +58,11 @@ export const taskSolutionFormController = {
 
             setTimeout(() => notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square'), 500);
         })
+    },
+    destroy() {
+        this.form.unmount();
+        this.form = null;
+        this.formElement = null;
     },
 
     async bindEvents() {

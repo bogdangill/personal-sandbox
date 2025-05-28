@@ -1,6 +1,5 @@
 import { UIComponentFactory } from './UIComponentFactory';
 import { notify } from './helpers';
-import { storageEntities, storageManager } from './storageService';
 
 const taskDescriptionFormView = {
     root: UIComponentFactory.createTaskForm(),
@@ -10,28 +9,33 @@ const taskDescriptionFormView = {
     resetButton: UIComponentFactory.createButton('neutral', 'Сбросить'),
     _isMounted: false,
 
-    appendChildren() {
-        if (this._isMounted) return; //избегаю повторного монтирования
-        this.root.append(this.nameInput);
-        this.root.append(this.textarea);
-        this.root.append(UIComponentFactory.createFormButtons(this.submitButton, this.resetButton));
-        this._isMounted = true;
-    },
     mount(containerSelector) {
         const container = document.querySelector(containerSelector);
-        this.appendChildren();
+        this._appendChildren();
         container.append(this.root);
     },
     unmount() {
         if (!this._isMounted) return;
         this.root.remove();
         this._isMounted = false;
-    }
+    },
+    _appendChildren() {
+        if (this._isMounted) return; //избегаю повторного монтирования
+        this.root.append(this.nameInput);
+        this.root.append(this.textarea);
+        this.root.append(UIComponentFactory.createFormButtons(this.submitButton, this.resetButton));
+        this._isMounted = true;
+    },
 }
 
 export const taskDescriptionFormController = {
     form: taskDescriptionFormView,
     formElement: taskDescriptionFormView.root,
+
+    init(selector) {
+        this.form.mount(selector);
+        this.bindEvents();
+    },
     /**
      * Отключает кнопку отправки, если текстовое поле пустое.
      * @listens sl-input
@@ -59,10 +63,10 @@ export const taskDescriptionFormController = {
         },{ capture: true })
     },
     /**
-     * Вместо стандартной отправки данных формы отправляет formData в sessionStorage в ключ "description-form-data"
-     * @listens HTMLFormElement
+     * Регистрирует обработчик отправки формы
+     * @param {function(data: Object): void} callback
      */
-    submit() {
+    onSubmit(cb) {
         this.formElement.addEventListener('submit', evt => {
             evt.preventDefault();
 
@@ -73,11 +77,17 @@ export const taskDescriptionFormController = {
                 data[key] = val
             });
 
-            storageManager.set(storageEntities.DESCRIPTION_FORM_DATA, data);
-            this.formElement.reset();
+            if (typeof callback === 'function') {
+                callback(data);
+            }
 
-            setTimeout(() => notify('Описание успешно сохранено!', 'success', 'check-square'), 500);
+            this.formElement.reset();
         })
+    },
+    destroy() {
+        this.form.unmount();
+        this.form = null;
+        this.formElement = null;
     },
 
     async bindEvents() {
@@ -88,7 +98,6 @@ export const taskDescriptionFormController = {
         ]).then(() => {
             this.disableSubmitButton();
             this.validate();
-            this.submit();
             this.reset();
         });
     },
