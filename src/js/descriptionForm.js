@@ -1,81 +1,37 @@
-import '@shoelace-style/shoelace/dist/components/input/input';
-import '@shoelace-style/shoelace/dist/components/textarea/textarea';
-import '@shoelace-style/shoelace/dist/components/button/button';
+import { UIComponentFactory } from './UIComponentFactory';
 import { notify } from './helpers';
-import { storageEntities, storageManager } from './storage';
+import { storageEntities, storageManager } from './storageService';
 
-//фабрика элементов формы из компонентов Shoelace
-function createTaskNameInput() {
-    return Object.assign(document.createElement('sl-input'), {
-        label: 'Название задачи',
-        name: 'title',
-        placeholder: 'e.g. Bubble sort',
-        clearable: true,
-        autocomplete: 'off'
-    });
-}
-function createTaskTextarea() {
-    return Object.assign(document.createElement('sl-textarea'), {
-        label: 'Описание задачи',
-        name: 'description',
-        resize: 'auto',
-        helpText: 'p.s. описание можно оформить в формате markdown - тогда после сохранения оформленный текст будет выводиться обернутый html-тегами',
-        minlength: 10
-    });
-}
-function createSubmitButton() {
-    const submitButton = Object.assign(document.createElement('sl-button'), {
-        variant: 'primary',
-        type: 'submit',
-        disabled: true
-    });
-    submitButton.innerText = "Сохранить";
+const taskDescriptionFormView = {
+    root: UIComponentFactory.createTaskForm(),
+    nameInput: UIComponentFactory.createTaskDescriptionNameInput(),
+    textarea: UIComponentFactory.createTaskDescriptionTextarea(),
+    submitButton: UIComponentFactory.createButton('primary', 'Создать', true, 'submit'),
+    resetButton: UIComponentFactory.createButton('neutral', 'Сбросить'),
+    _isMounted: false,
 
-    return submitButton;
-}
-function createResetButton() {
-    const resetButton = Object.assign(document.createElement('sl-button'), {
-        variant: 'neutral',
-        type: 'reset'
-    });
-    resetButton.innerText = "Сбросить";
-
-    return resetButton;
-}
-function createFormButtons(...buttons) {
-    const buttonWrapper = document.createElement('div');
-    buttonWrapper.classList.add('form-buttons');
-    buttonWrapper.append(...buttons);
-
-    return buttonWrapper;
-}
-function createTaskDescriptionForm() {
-    const taskDescriptionForm = document.createElement('form');
-    taskDescriptionForm.setAttribute('id', 'task-description-form');
-
-    return taskDescriptionForm;
-}
-
-//объект-конструктор формы (что-то вроде базового класса)
-const taskDescriptionForm = {
-    root: createTaskDescriptionForm(),
-    nameInput: createTaskNameInput(),
-    textarea: createTaskTextarea(),
-    submitButton: createSubmitButton(),
-    resetButton: createResetButton(),
-    
     appendChildren() {
+        if (this._isMounted) return; //избегаю повторного монтирования
         this.root.append(this.nameInput);
         this.root.append(this.textarea);
-        this.root.append(createFormButtons(this.submitButton, this.resetButton));
+        this.root.append(UIComponentFactory.createFormButtons(this.submitButton, this.resetButton));
+        this._isMounted = true;
+    },
+    mount(containerSelector) {
+        const container = document.querySelector(containerSelector);
+        this.appendChildren();
+        container.append(this.root);
+    },
+    unmount() {
+        if (!this._isMounted) return;
+        this.root.remove();
+        this._isMounted = false;
     }
 }
 
-//объект-контроллер формы (что-то вроде расширяемого класса типа class ... extends BaseClass)
-const taskDescriptionFormManager = {
-    form: taskDescriptionForm,
-    formElement: taskDescriptionForm.root,
-
+export const taskDescriptionFormController = {
+    form: taskDescriptionFormView,
+    formElement: taskDescriptionFormView.root,
     /**
      * Отключает кнопку отправки, если текстовое поле пустое.
      * @listens sl-input
@@ -90,8 +46,8 @@ const taskDescriptionFormManager = {
      * @listens HTMLFormElement
      */
     reset() {
-        this.formElement.addEventListener('reset', evt => {
-            this.formElement.reset();
+        this.formElement.reset();
+        this.formElement.addEventListener('reset', () => {
             this.form.submitButton.disabled = true;
         })
     },
@@ -124,7 +80,7 @@ const taskDescriptionFormManager = {
         })
     },
 
-    async bindMethods() {
+    async bindEvents() {
         await Promise.all([
             customElements.whenDefined('sl-input'),
             customElements.whenDefined('sl-textarea'),
@@ -135,16 +91,5 @@ const taskDescriptionFormManager = {
             this.submit();
             this.reset();
         });
-    }
-}
-
-export function renderTaskDescriptionForm() {
-    const taskDescription = document.getElementById('task-description');
-
-    const form = taskDescriptionForm;
-    form.appendChildren();
-    taskDescription.append(form.root);
-
-    const formController = taskDescriptionFormManager;
-    formController.bindMethods();
+    },
 }
