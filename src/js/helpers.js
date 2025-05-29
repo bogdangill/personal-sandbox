@@ -1,11 +1,19 @@
 import '@shoelace-style/shoelace/dist/components/alert/alert';
 import '@shoelace-style/shoelace/dist/components/icon/icon';
 
+import SimpleBar from 'simplebar';
+import ResizeObserver from 'resize-observer-polyfill';
+window.ResizeObserver = ResizeObserver;
+
 function escapeHtml(html) {
     const div = document.createElement('div');
     div.textContent = html;
     return div.innerHTML;
 }
+
+export const showScroll = (container) => new SimpleBar(container, {
+    scrollbarMinSize: 20
+});
 
 export function notify(message, variant = 'warning', icon = 'exclamation-triangle', duration = 3000) {
     const formAlert = Object.assign(document.createElement('sl-alert'), {
