@@ -5,78 +5,73 @@ import ResizeObserver from 'resize-observer-polyfill';
 window.ResizeObserver = ResizeObserver;
 
 import {marked} from 'marked';
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-hljs.registerLanguage('javascript', javascript);
 
 //веб-компоненты Шнурков
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
+
 import { definePreferedTheme, renderThemeSwitcher } from './js/theme.js';
+import { taskDescriptionFormController } from './js/descriptionForm';
+import { storageEntities, storageManager } from './js/storageService';
+import { taskSolutionFormController } from './js/solutionForm';
+import { UIComponentFactory } from './js/UIComponentFactory';
+import { notify } from './js/helpers';
 
-import '@shoelace-style/shoelace/dist/components/drawer/drawer';
-import '@shoelace-style/shoelace/dist/components/button/button';
+const showScroll = (container) => new SimpleBar(container, {
+    scrollbarMinSize: 20
+});
 
-import { renderTaskDescriptionForm } from './js/tasks';
+function initDescriptionForm() {
+    taskDescriptionFormController.init('#task-description');
 
-// function renderTasksDrawer() {
-//     const tasksDrawerTriggerContainer = document.getElementById('tasks-drawer');
-//     const body = document.querySelector('body');
-    
-//     const tasksDrawer = Object.assign(document.createElement('sl-drawer'), {
-//         label: 'Список задач',
-//         placement: 'start'
-//     });
+    taskDescriptionFormController.onSubmit(data => {
+        storageManager.set(storageEntities.DESCRIPTION_FORM_DATA, data);
+        notify('Описание успешно сохранено!', 'success', 'check-square');
+    });
+}
 
-//     body.append(tasksDrawer);
+function manageForms() {
+    const taskDescriptionContainer = document.getElementById('task-description');
+    const taskDescriptionData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
 
-//     const tasksDrawerTrigger = Object.assign(document.createElement('sl-button'), {
-//         caret: true,
-//         size: 'small'
-//     });
-//     tasksDrawerTrigger.textContent = 'Показать остальные';
-//     tasksDrawerTrigger.addEventListener('click', () => tasksDrawer.show());
-//     tasksDrawerTriggerContainer.append(tasksDrawerTrigger);
-// }
+    if (taskDescriptionData) {
+        taskDescriptionFormController.destroy();
+        showTaskDescriptionView(taskDescriptionData);
+        initSolutionForm();
+        showScroll(taskDescriptionContainer);
+    } else {
+        initDescriptionForm();
+        showScroll(taskDescriptionContainer);
 
-const taskDescription = document.getElementById('task-description');
-const taskSolution = document.getElementById('task-solution');
-
-async function loadTask(taskName) {
-    try {
-        const response$ = await fetch(`./training-tasks/${taskName}.md`);
-        const markdown$ = await response$.text();
-    
-        const solution$ = await fetch(`./training-tasks/${taskName}.js`);
-        const solutionCode$ = await solution$.text();
-        
-        tasks.push(new TaskModel('task1', markdown$, solutionCode$));
-
-        localStorage.setItem('tasks-data', JSON.stringify(tasks));
-
-        //-------------------------------------------------------------------------------------
-        const highlightedCode = hljs.highlight(solutionCode$, { language: 'javascript' }).value;
-    
-        taskDescription.innerHTML = marked.parse(markdown$);
-        taskSolution.innerHTML = `${highlightedCode}`;
-
-        new SimpleBar(taskDescription, {
-            scrollbarMinSize: 20
-        });
-        new SimpleBar(taskSolution);
-    } catch (error) {
-        console.error('Ошибка загрузки задачи:', error);
-        taskSolution.innerText = `Ошибка: ${error.message}`;
+        storageManager.onUpdate(storageEntities.DESCRIPTION_FORM_DATA, () => {
+            const data = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
+            taskDescriptionFormController.destroy();
+            showTaskDescriptionView(data);
+            initSolutionForm();
+            showScroll(taskDescriptionContainer);
+        }); 
     }
 }
 
-//пока так, потом сделаю выбор задач через интерфейс
-// loadTask('task-1');
+function showTaskDescriptionView(data) {
+    const taskDescriptionContainer = document.getElementById('task-description');
+    const taskDescriptionData = data;
+    const taskDescriptionObject = JSON.parse(taskDescriptionData);
+    const taskDescription = `# ${taskDescriptionObject.title} \n ${taskDescriptionObject.description}`;
+    taskDescriptionContainer.innerHTML = marked.parse(taskDescription);
+}
+
+function initSolutionForm() {
+    const root = document.getElementById('root');
+    const solutionCell = UIComponentFactory.createGridCell('💻Решение');
+    solutionCell.classList.add('ps-grid__cell--bordered');
+    root.append(solutionCell);
+    taskSolutionFormController.init('#task-solution');
+}
 
 function initApp() {
     definePreferedTheme();
     renderThemeSwitcher();
-    renderTaskDescriptionForm();
-    // renderTasksDrawer();
+    manageForms();
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+initApp();

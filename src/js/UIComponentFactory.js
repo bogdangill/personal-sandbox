@@ -1,3 +1,10 @@
+import '@shoelace-style/shoelace/dist/components/button/button';
+import '@shoelace-style/shoelace/dist/components/icon/icon';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip';
+import '@shoelace-style/shoelace/dist/components/textarea/textarea';
+import '@shoelace-style/shoelace/dist/components/input/input';
+import '@shoelace-style/shoelace/dist/components/divider/divider';
+
 /**
  * @namespace
  * Фабрика для создания UI-компонентов.
@@ -73,5 +80,30 @@ export const UIComponentFactory = {
             circle: true,
             size: 'medium'
         })
+    },
+    createDivider() {
+        const divider = document.createElement('sl-divider');
+        divider.style = '--spacing: 0;';
+        return divider;
+    },
+    createGridCell(title) {
+        const cell = document.createElement('article');
+        const cellHeader = document.createElement('header');
+        const cellTitle = document.createElement('h2');
+        const cellContainer = document.createElement('div');
+        const divider = this.createDivider();
+
+        cell.classList.add('ps-grid__cell');
+        cellHeader.classList.add('ps-grid__header');
+        cellTitle.classList.add('ps-grid__title');
+        cellContainer.id = 'task-solution';
+
+        cellTitle.innerText = title;
+        cellHeader.append(cellTitle);
+        cell.append(cellHeader);
+        cell.append(divider);
+        cell.append(cellContainer);
+
+        return cell;
     }
 }

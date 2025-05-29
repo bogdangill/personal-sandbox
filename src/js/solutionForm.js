@@ -1,12 +1,11 @@
 import { UIComponentFactory } from './UIComponentFactory';
 import { notify } from './helpers';
-import { storageEntities, storageManager } from './storageService';
 
 const taskSolutionFormView = {
     root: UIComponentFactory.createTaskForm(),
     textarea: UIComponentFactory.createTaskSolutionTextarea(),
     executeButton: UIComponentFactory.createButton('warning', 'Выполнить'),
-    submitButton: UIComponentFactory.createButton('success', 'Сохранить', true),
+    saveButton: UIComponentFactory.createButton('success', 'Сохранить', true),
     _isMounted: false,
 
     mount(containerSelector) {
@@ -49,15 +48,16 @@ export const taskSolutionFormController = {
             notify('Код выполнился, результат выполнения', 'neutral');
         });
     },
-    save() {
-        this.form.submitButton.addEventListener('click', () => {
-            const descriptionFormData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
-            const currentTaskData = createTaskData(descriptionFormData.title, descriptionFormData.description, this.form.textarea.value);
+    onSave(cb) {
+        this.form.submitButton.addEventListener('click', cb);
+        //вынеси в tasks.js
+            
+        // const descriptionFormData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
+        // const currentTaskData = createTaskData(descriptionFormData.title, descriptionFormData.description, this.form.textarea.value);
 
-            storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
+        // storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
 
-            setTimeout(() => notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square'), 500);
-        })
+        // setTimeout(() => notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square'), 500);
     },
     destroy() {
         this.form.unmount();
@@ -70,7 +70,6 @@ export const taskSolutionFormController = {
             customElements.whenDefined('sl-button')
         ]).then(() => {
             this.disableSubmitButton();
-            this.save();
             this.execute();
         });
     }

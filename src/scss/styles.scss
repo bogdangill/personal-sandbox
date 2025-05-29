@@ -140,8 +140,12 @@ main {
         display: grid;
         grid-template-rows: auto auto 1fr;
         flex-basis: 45%;
-        max-width: 49%;
+        // max-width: 49%;
         flex-grow: 1;
+
+        &--bordered {
+            border-left: 1px solid var(--sl-panel-border-color);
+        }
     }
     &__title {
         font-size: var(--sl-font-size-x-large);
@@ -158,6 +162,7 @@ main {
 #task-solution {
     height: 100%;
     overflow: auto;
+    padding: 0 var(--sl-spacing-medium);
 }
 
 .simplebar-scrollbar::before {
@@ -172,8 +177,6 @@ main {
 }
 
 #task-description {
-    padding-right: var(--sl-spacing-medium);
-
     strong {
         @include color(warning, 500);
     }
@@ -203,19 +206,18 @@ main {
     }
 }
 
-#task-description-form {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+.task-form {
+    display: flex;
+    flex-direction: column;
+    // grid-template-rows: auto 1fr auto;
     gap: var(--sl-spacing-medium);
     height: 100%;
     padding-top: var(--sl-spacing-medium);
     padding-bottom: var(--sl-spacing-medium);
-    margin-left: var(--sl-spacing-medium);
-}
 
-#task-solution {
-    padding-left: var(--sl-spacing-medium);
-    line-height: var(--sl-line-height-dense);
+    sl-textarea {
+        flex-grow: 1;
+    }
 }
 
 .sl-toast-stack {
@@ -227,4 +229,16 @@ main {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--sl-spacing-medium);
+}
+
+.task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sl-spacing-medium);
+}
+
+.solution-textarea {
+    resize: none;
+    height: 100%;
 }

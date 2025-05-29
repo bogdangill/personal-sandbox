@@ -40,7 +40,7 @@ export const storageManager = {
     get(entity) {
         const config = this._getConfig(entity);
         const storage = this._getStorage(config.storage);
-        const data = storage.getItem(config.key);
+        let data = storage.getItem(config.key);
 
         if (typeof data !== 'string') data = JSON.parse(data);
 

@@ -77,11 +77,12 @@ export const taskDescriptionFormController = {
                 data[key] = val
             });
 
-            if (typeof callback === 'function') {
-                callback(data);
+            if (typeof cb === 'function') {
+                cb(data);
             }
 
-            this.formElement.reset();
+            //а зачем тебе ресет, если форма все равно удаляется после сабмита?
+            // this.formElement.reset();
         })
     },
     destroy() {

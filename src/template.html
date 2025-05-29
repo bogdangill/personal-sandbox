@@ -20,24 +20,16 @@
             💀
         </h1>
         <p class="header__text">Снизу будет выводиться описание текущей задачи и решение</p>
+        <!-- <div id="tasks-drawer"></div> -->
     </header>
     <main class="container">
-        <section class="ps-grid">
+        <section class="ps-grid" id="root">
             <article class="ps-grid__cell">
                 <header class="ps-grid__header">
                     <h2 class="ps-grid__title">📝Задача</h2>
-                    <div id="tasks-drawer"></div>
                 </header>
                 <sl-divider style="--spacing: 0;"></sl-divider>
                 <div id="task-description"></div>
-            </article>
-            <sl-divider class="ps-grid__divider" style="--spacing: 0;" vertical></sl-divider>
-            <article class="ps-grid__cell">
-                <header class="ps-grid__header">
-                    <h2 class="ps-grid__title">💻Решение</h2>
-                </header>
-                <sl-divider style="--spacing: 0;"></sl-divider>
-                <pre id="task-solution"></pre>
             </article>
         </section>
     </main>
