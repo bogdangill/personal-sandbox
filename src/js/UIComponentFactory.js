@@ -86,7 +86,7 @@ export const UIComponentFactory = {
         divider.style = '--spacing: 0;';
         return divider;
     },
-    createGridCell(title) {
+    createGridCell(title, id) {
         const cell = document.createElement('article');
         const cellHeader = document.createElement('header');
         const cellTitle = document.createElement('h2');
@@ -96,7 +96,7 @@ export const UIComponentFactory = {
         cell.classList.add('ps-grid__cell');
         cellHeader.classList.add('ps-grid__header');
         cellTitle.classList.add('ps-grid__title');
-        cellContainer.id = 'task-solution';
+        cellContainer.id = id;
 
         cellTitle.innerText = title;
         cellHeader.append(cellTitle);

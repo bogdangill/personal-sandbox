@@ -7,6 +7,9 @@ import {marked} from 'marked';
 
 export const formManager = {
     _initDescriptionForm() {
+        const root = document.getElementById('root');
+        const descriptionCell = UIComponentFactory.createGridCell('📝Задача', 'task-description');
+        root.append(descriptionCell);
         const taskDescriptionContainer = document.getElementById('task-description');
         taskDescriptionFormController.init('#task-description');
         showScroll(taskDescriptionContainer);
@@ -18,7 +21,7 @@ export const formManager = {
     },
     _initSolutionForm() {
         const root = document.getElementById('root');
-        const solutionCell = UIComponentFactory.createGridCell('💻Решение');
+        const solutionCell = UIComponentFactory.createGridCell('💻Решение', 'task-solution');
         solutionCell.classList.add('ps-grid__cell--bordered');
         root.append(solutionCell);
         taskSolutionFormController.init('#task-solution');
