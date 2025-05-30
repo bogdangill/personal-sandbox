@@ -1,5 +1,12 @@
 import { eventBus } from "./eventBus";
 
+/**
+ * Сущности хранилища и их конфигурация:
+ * - DESCRIPTION_FORM_DATA: данные формы описания задачи (sessionStorage).
+ * - TASKS_DATA: список всех задач (localStorage).
+ * - CURRENT_TASK_DATA: текущая редактируемая задача (localStorage).
+ * - События: `${key}-updated` (например, "tasks-data-updated").
+ */
 export const storageEntities = Object.freeze({
     DESCRIPTION_FORM_DATA: 'descriptionFormData',
     CURRENT_TASK_DATA: 'currentTaskData',
@@ -42,9 +49,7 @@ export const storageManager = {
         const storage = this._getStorage(config.storage);
         let data = storage.getItem(config.key);
 
-        if (typeof data !== 'string') data = JSON.parse(data);
-
-        return data || null;
+        return data ? typeof data === 'string' ? data : JSON.parse(data) : null;
     },
     /**
      * устанавливает значение ключа в Storage и публикует соответствующее ему событие
