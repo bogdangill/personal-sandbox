@@ -39,7 +39,7 @@ export const taskSolutionFormController = {
      */
     disableSubmitButton() {
         this.form.textarea.addEventListener('input', () => {
-            this.form.submitButton.disabled = this.form.textarea.value.trim().length <= 0;
+            this.form.saveButton.disabled = this.form.textarea.value.trim().length <= 0;
         })
     },
     execute() {
@@ -49,7 +49,10 @@ export const taskSolutionFormController = {
         });
     },
     onSave(cb) {
-        this.form.submitButton.addEventListener('click', cb);
+        this.form.saveButton.addEventListener('click', () => {
+            const data = this.form.textarea.value;
+            cb(data);
+        });
         //вынеси в tasks.js
             
         // const descriptionFormData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
@@ -58,6 +61,7 @@ export const taskSolutionFormController = {
         // storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
 
         // setTimeout(() => notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square'), 500);
+
     },
     destroy() {
         this.form.unmount();

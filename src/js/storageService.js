@@ -47,7 +47,7 @@ export const storageManager = {
     get(entity) {
         const config = this._getConfig(entity);
         const storage = this._getStorage(config.storage);
-        let data = storage.getItem(config.key);
+        const data = storage.getItem(config.key);
 
         return data ? typeof data === 'string' ? data : JSON.parse(data) : null;
     },
@@ -65,6 +65,19 @@ export const storageManager = {
         storage.setItem(config.key, data);
         eventBus.dispatch(this._getEventName(entity, 'updated'));
     },
+    remove(entity) {
+        const config = this._getConfig(entity);
+        const storage = this._getStorage(config.storage);
+        const data = storage.getItem(config.key);
+
+        if (data === null) {
+            throw new Error(`Невозможно удалить: ${config.key} отсутствует в ${config.storage} хранилище!`);
+        }
+
+        storage.removeItem(config.key);
+        eventBus.remove(this._getEventName(entity, 'updated'));
+        eventBus.dispatch(this._getEventName(entity, 'deleted'));
+    },
     /**
      * хук для отлова опубликованного события обновления Storage
      * @param {storageEntities} entity - название ключа из Storage
@@ -73,9 +86,12 @@ export const storageManager = {
     onUpdate(entity, cb) {
         eventBus.listen(this._getEventName(entity, 'updated'), cb);
     },
+    onRemove(entity, cb) {
+        eventBus.listen(this._getEventName(entity, 'deleted'), cb);
+    },
     _getConfig(entity) {
         const config = storageConfig[entity];
-        if (!config) throw new Error(`Unknown storage entity: ${entity}`);
+        if (!config) throw new Error(`Неизвестная сущность хранилища: ${entity}`);
         return config;
     },
     _getStorage(type) {

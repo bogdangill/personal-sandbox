@@ -6,7 +6,7 @@ const taskDescriptionFormView = {
     nameInput: UIComponentFactory.createTaskDescriptionNameInput(),
     textarea: UIComponentFactory.createTaskDescriptionTextarea(),
     submitButton: UIComponentFactory.createButton('primary', 'Создать', true, 'submit'),
-    resetButton: UIComponentFactory.createButton('neutral', 'Сбросить'),
+    resetButton: UIComponentFactory.createButton('neutral', 'Сбросить', false, 'reset'),
     _isMounted: false,
 
     mount(containerSelector) {
