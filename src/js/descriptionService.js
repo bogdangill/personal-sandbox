@@ -14,7 +14,7 @@ export const descriptionService = {
         showScroll(taskDescriptionContainer);
     
         this._formController.onSubmit(data => {
-            this.setData(data);
+            this._setData(data);
             notify('Описание успешно сохранено!', 'success', 'check-square');
         });
     },
@@ -34,13 +34,13 @@ export const descriptionService = {
         taskDescriptionContainer.innerHTML = marked.parse(taskDescription);
         showScroll(taskDescriptionContainer);
     },
-    setData(data) {
+    _setData(data) {
         return this._sm.set(storageEntities.DESCRIPTION_FORM_DATA, data);
     },
-    getData() {
+    _getData() {
         return this._sm.get(storageEntities.DESCRIPTION_FORM_DATA);
     },
-    removeData() {
+    _removeData() {
         return this._sm.remove(storageEntities.DESCRIPTION_FORM_DATA);
     }
 }

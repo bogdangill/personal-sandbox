@@ -15,7 +15,7 @@ export const solutionService = {
     initForm() {
         this._formController.init('#task-solution');
         this._formController.onSave(data => {
-            this._tm.addOrUpdateCurrentTask(data);
+            this._setData(data);
             notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square');
         });
     },
@@ -36,7 +36,10 @@ export const solutionService = {
         solutionContainer.innerHTML = highlightedCode;
         showScroll(solutionContainer);
     },
-    getData() {
+    _getData() {
         return this._sm.get(storageEntities.CURRENT_TASK_DATA);
+    },
+    _setData(data) {
+        return this._tm.addOrUpdateCurrentTask(data);
     }
 }
