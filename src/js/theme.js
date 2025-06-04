@@ -2,17 +2,36 @@ import '@shoelace-style/shoelace/dist/components/button/button';
 import '@shoelace-style/shoelace/dist/components/icon/icon';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip';
 import { storageEntities, storageManager } from './storageService';
+import { EditorView } from 'codemirror';
+import { Compartment } from '@codemirror/state';
+import { taskSolutionFormView } from './solutionForm';
 
 const THEME_CLASS_DARK = 'sl-theme-dark';
+export const customTheme = new Compartment();
 
 function switchDarkTheme() {
     if (storageManager.get(storageEntities.CURRENT_THEME) === 'dark') {
         document.documentElement.classList.remove(THEME_CLASS_DARK);
         storageManager.set(storageEntities.CURRENT_THEME, 'light');
+
+        taskSolutionFormView.editor.dispatch({
+            effects: customTheme.reconfigure(defineEditorTheme(false))
+        });
     } else {
         document.documentElement.classList.add(THEME_CLASS_DARK);
         storageManager.set(storageEntities.CURRENT_THEME, 'dark');
+
+        taskSolutionFormView.editor.dispatch({
+            effects: customTheme.reconfigure(defineEditorTheme(true))
+        });
     }
+}
+
+export function defineEditorTheme(isThemeDark) {
+    return EditorView.theme({
+        "&": {flexGrow: 1},
+        ".cm-scroller": {overflow: "auto"}
+    }, {dark: isThemeDark});
 }
 
 export function definePreferedTheme() {

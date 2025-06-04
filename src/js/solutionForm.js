@@ -1,12 +1,27 @@
 import { UIComponentFactory } from './UIComponentFactory';
 import { notify } from './helpers';
+import { basicSetup } from 'codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { EditorView } from 'codemirror';
+import { customTheme, defineEditorTheme } from './theme';
+import { EditorState } from '@codemirror/state';
+import { oneDark } from '@codemirror/theme-one-dark';
 
-const taskSolutionFormView = {
+export const taskSolutionFormView = {
     root: UIComponentFactory.createTaskForm(),
-    textarea: UIComponentFactory.createTaskSolutionTextarea(),
     executeButton: UIComponentFactory.createButton('warning', 'Выполнить'),
     saveButton: UIComponentFactory.createButton('success', 'Сохранить', true),
     _isMounted: false,
+
+    get editor() {
+        return this._editor;
+    },
+    /**
+     * @param {EditorView} value
+     */
+    set editor(value) {
+        return this._editor = value;
+    },
 
     mount(containerSelector) {
         const container = document.querySelector(containerSelector);
@@ -20,7 +35,6 @@ const taskSolutionFormView = {
     },
     _appendChildren() {
         if (this._isMounted) return; //избегаю повторного монтирования
-        this.root.append(this.textarea);
         this.root.append(UIComponentFactory.createFormButtons(this.executeButton, this.saveButton));
         this._isMounted = true;
     },
@@ -31,6 +45,18 @@ export const taskSolutionFormController = {
     formElement: taskSolutionFormView.root,
 
     init(selector) {
+        let state = EditorState.create({
+            extensions: [
+                basicSetup,
+                javascript(),
+                customTheme.of(defineEditorTheme(false)),
+                oneDark
+            ]
+        });
+        this.form.editor = new EditorView({
+            state,
+            parent: taskSolutionFormView.root,
+        });
         this.form.mount(selector);
         this.bindEvents();
     },
@@ -38,9 +64,9 @@ export const taskSolutionFormController = {
      * Отключает кнопку сохранения, если поле с решением пустое.
      */
     disableSubmitButton() {
-        this.form.textarea.addEventListener('input', () => {
-            this.form.saveButton.disabled = this.form.textarea.value.trim().length <= 0;
-        })
+        // this.form.textarea.addEventListener('input', () => {
+        //     this.form.saveButton.disabled = this.form.textarea.value.trim().length <= 0;
+        // })
     },
     execute() {
         this.form.executeButton.addEventListener('click', () => {
@@ -50,21 +76,13 @@ export const taskSolutionFormController = {
     },
     onSave(cb) {
         this.form.saveButton.addEventListener('click', () => {
-            const data = this.form.textarea.value;
-            cb(data);
+            // const data = this.form.textarea.value;
+            // cb(data);
         });
-        //вынеси в tasks.js
-            
-        // const descriptionFormData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
-        // const currentTaskData = createTaskData(descriptionFormData.title, descriptionFormData.description, this.form.textarea.value);
-
-        // storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
-
-        // setTimeout(() => notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square'), 500);
-
     },
     destroy() {
         this.form.unmount();
+        this.form.editor.destroy();
         this.form = null;
         this.formElement = null;
     },
