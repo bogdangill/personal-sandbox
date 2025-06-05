@@ -9,19 +9,10 @@ import { oneDark } from '@codemirror/theme-one-dark';
 
 export const taskSolutionFormView = {
     root: UIComponentFactory.createTaskForm(),
+    editor: null,
     executeButton: UIComponentFactory.createButton('warning', 'Выполнить'),
     saveButton: UIComponentFactory.createButton('success', 'Сохранить', true),
     _isMounted: false,
-
-    get editor() {
-        return this._editor;
-    },
-    /**
-     * @param {EditorView} value
-     */
-    set editor(value) {
-        return this._editor = value;
-    },
 
     mount(containerSelector) {
         const container = document.querySelector(containerSelector);
