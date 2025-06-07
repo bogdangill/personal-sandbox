@@ -3,11 +3,56 @@ import { notify } from './helpers';
 import { basicSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { EditorView } from 'codemirror';
-import { customTheme, defineEditorTheme } from './theme';
 import { EditorState } from '@codemirror/state';
-import { oneDark } from '@codemirror/theme-one-dark';
+import { themeService } from './themeService';
+import { tomorrow } from 'thememirror';
+import { eventBus } from './eventBus';
 
-export const taskSolutionFormView = {
+export const editorCreationEvt = 'editor-created';
+
+export const editorView = {
+    instance: null,
+    _eb: eventBus,
+    _ts: themeService,
+    
+    create(parent) {
+        this.instance = new EditorView({
+            state: this._createState(),
+            parent: parent
+        });
+        
+        this._ts.setEditorView(this.instance);
+        this._eb.dispatch(editorCreationEvt);
+
+        return this.instance;
+    },
+    destroy() {
+        if (this.instance) {
+            this.instance.dom.remove();
+            this.instance.destroy();
+            this.instance = null;
+            this._ts.setEditorView(null); // Очищаем ссылку
+        }
+    },
+    _createState() {
+        return EditorState.create({
+            extensions: [
+                basicSetup,
+                javascript(),
+                this._createCustomViewStyle(),
+                this._ts.editorTheme.of(tomorrow)
+            ]
+        });
+    },
+    _createCustomViewStyle() {
+        return EditorView.theme({
+            "&": {flexGrow: 1},
+            ".cm-scroller": {overflow: "auto"}
+        });
+    }
+}
+
+const taskSolutionFormView = {
     root: UIComponentFactory.createTaskForm(),
     editor: null,
     executeButton: UIComponentFactory.createButton('warning', 'Выполнить'),
@@ -16,11 +61,15 @@ export const taskSolutionFormView = {
 
     mount(containerSelector) {
         const container = document.querySelector(containerSelector);
+        this.editor = editorView;
+        this.editor.create(this.root);
         this._appendChildren();
         container.append(this.root);
     },
     unmount() {
         if (!this._isMounted) return;
+        this.editor.destroy()
+        this.editor = null;
         this.root.remove();
         this._isMounted = false;
     },
@@ -36,18 +85,6 @@ export const taskSolutionFormController = {
     formElement: taskSolutionFormView.root,
 
     init(selector) {
-        let state = EditorState.create({
-            extensions: [
-                basicSetup,
-                javascript(),
-                customTheme.of(defineEditorTheme(false)),
-                oneDark
-            ]
-        });
-        this.form.editor = new EditorView({
-            state,
-            parent: taskSolutionFormView.root,
-        });
         this.form.mount(selector);
         this.bindEvents();
     },
@@ -73,7 +110,6 @@ export const taskSolutionFormController = {
     },
     destroy() {
         this.form.unmount();
-        this.form.editor.destroy();
         this.form = null;
         this.formElement = null;
     },
