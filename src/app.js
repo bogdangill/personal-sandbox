@@ -4,14 +4,12 @@ import 'highlight.js/scss/an-old-hope.scss';
 //веб-компоненты Шнурков
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 
-import { definePreferedTheme, renderThemeSwitcher } from './js/theme.js';
 import { screenManager } from './js/screenManager';
 import { storageEntities, storageManager } from './js/storageService';
+import { themeService } from './js/themeService';
 
 document.addEventListener('DOMContentLoaded', () => {
-    definePreferedTheme();
-    renderThemeSwitcher();
-
+    themeService.init();
     const taskDescriptionData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
 
     if (taskDescriptionData) {
@@ -26,5 +24,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data) {
             screenManager.showResolvingStep(data);
         }
-    })
+    });
 });
