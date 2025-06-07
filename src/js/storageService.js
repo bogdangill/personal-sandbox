@@ -30,7 +30,7 @@ const storageConfig = {
     },
     [storageEntities.PREFERED_THEME]: {
         key: 'prefered-theme',
-        storage: 'local',
+        storage: 'local', //можно попробовать поэкспериментировать, сменив на session, поставив на компе тему по времени суток. тогда каждый раз в новой вкладке будет отслеживаться системная тема
     },
     [storageEntities.CURRENT_THEME]: {
         key: 'current-theme',
@@ -56,16 +56,17 @@ export const storageManager = {
      * @param {storageEntities} entity - название ключа из Storage
      * @param {string | object} data
      */
-    set(entity, data) {
+    set(entity, data, createEvent = true) {
         const config = this._getConfig(entity);
         const storage = this._getStorage(config.storage);
 
         if (typeof data !== 'string') data = JSON.stringify(data);
 
         storage.setItem(config.key, data);
-        eventBus.dispatch(this._getEventName(entity, 'updated'));
+
+        if (createEvent) eventBus.dispatch(this._getEventName(entity, 'updated'));
     },
-    remove(entity) {
+    remove(entity, createEvent = true) {
         const config = this._getConfig(entity);
         const storage = this._getStorage(config.storage);
         const data = storage.getItem(config.key);
@@ -76,7 +77,8 @@ export const storageManager = {
 
         storage.removeItem(config.key);
         eventBus.remove(this._getEventName(entity, 'updated'));
-        eventBus.dispatch(this._getEventName(entity, 'deleted'));
+
+        if (createEvent) eventBus.dispatch(this._getEventName(entity, 'deleted'));
     },
     /**
      * хук для отлова опубликованного события обновления Storage
