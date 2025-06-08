@@ -11,7 +11,6 @@ export const storageEntities = Object.freeze({
     DESCRIPTION_FORM_DATA: 'descriptionFormData',
     CURRENT_TASK_DATA: 'currentTaskData',
     TASKS_DATA: 'tasksData',
-    PREFERED_THEME: 'preferedTheme',
     CURRENT_THEME: 'currentTheme',
 });
 
@@ -27,10 +26,6 @@ const storageConfig = {
     [storageEntities.TASKS_DATA]: {
         key: 'tasks-data',
         storage: 'local',
-    },
-    [storageEntities.PREFERED_THEME]: {
-        key: 'prefered-theme',
-        storage: 'local', //можно попробовать поэкспериментировать, сменив на session, поставив на компе тему по времени суток. тогда каждый раз в новой вкладке будет отслеживаться системная тема
     },
     [storageEntities.CURRENT_THEME]: {
         key: 'current-theme',
