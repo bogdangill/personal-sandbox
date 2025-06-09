@@ -30,3 +30,22 @@ export function notify(message, variant = 'warning', icon = 'exclamation-triangl
     document.body.append(formAlert);
     return formAlert.toast();
 }
+
+export async function fillDescriptionForm(form) {
+    const title = await fetch('https://fish-text.ru/get?&type=title&number=1')
+        .then(res => res.json())
+        .catch(err => {
+            notify(`${err} для &type=title`, 'danger');
+            return {text: 'default title'};
+        });
+    const description = await fetch('https://fish-text.ru/get?&type=paragraph&number=2')
+        .then(res => res.json())
+        .catch(err => {
+            notify(`${err} для &type=paragraph`, 'danger');
+            return {text: 'депрессивный дескрипшн надо сгенерить какой-то бред из головы'}
+        });
+
+    form.nameInput.value = title.text;
+    form.textarea.value = description.text;
+    form.textarea.dispatchEvent(new CustomEvent('sl-input')); //для валидации по disableSubmitButton()
+}

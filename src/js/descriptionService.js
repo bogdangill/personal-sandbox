@@ -1,7 +1,7 @@
 import { marked } from "marked";
 import { UIComponentFactory } from "./UIComponentFactory";
 import { taskDescriptionFormController } from "./descriptionForm";
-import { notify, showScroll } from "./helpers";
+import { fillDescriptionForm, notify, showScroll } from "./helpers";
 import { storageEntities, storageManager } from "./storageService";
 
 export const descriptionService = {
@@ -12,7 +12,8 @@ export const descriptionService = {
         const taskDescriptionContainer = document.getElementById('task-description');
         this._formController.init('#task-description');
         showScroll(taskDescriptionContainer);
-    
+        fillDescriptionForm(this._formController.form);
+
         this._formController.onSubmit(data => {
             this._setData(data);
             notify('Описание успешно сохранено!', 'success', 'check-square');
