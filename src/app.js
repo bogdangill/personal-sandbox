@@ -11,9 +11,12 @@ import { themeService } from './js/themeService';
 document.addEventListener('DOMContentLoaded', () => {
     themeService.init();
     const taskDescriptionData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
+    const currentTaskData = storageManager.get(storageEntities.CURRENT_TASK_DATA);
 
     if (taskDescriptionData) {
         screenManager.showResolvingStep(taskDescriptionData);
+    } else if (currentTaskData) {
+        screenManager.showResolvingStep(currentTaskData);
     } else {
         screenManager.showInitialStep();
     }

@@ -80,9 +80,6 @@ export const taskDescriptionFormController = {
             if (typeof cb === 'function') {
                 cb(data);
             }
-
-            //а зачем тебе ресет, если форма все равно удаляется после сабмита?
-            // this.formElement.reset();
         })
     },
     destroy() {

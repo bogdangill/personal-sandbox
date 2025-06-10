@@ -89,9 +89,17 @@ export const taskSolutionFormController = {
     form: taskSolutionFormView,
     formElement: taskSolutionFormView.root,
 
-    init(selector) {
+    init(selector, data = null) {
         this.form.mount(selector);
         this.bindEvents();
+        
+        if (data) {
+            const currentTaskObj = JSON.parse(data);
+            const value = this.form.editor.instance.state.update({
+                changes: {from: 0, insert: currentTaskObj.code}
+            });
+            this.form.editor.instance.dispatch(value);
+        }
     },
     /**
      * Отключает кнопку сохранения, если поле с решением пустое.

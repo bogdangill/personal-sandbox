@@ -1,7 +1,7 @@
 import { UIComponentFactory } from "./UIComponentFactory";
 import { notify, showScroll } from "./helpers";
 import { taskSolutionFormController } from "./solutionForm";
-import { storageManager } from "./storageService";
+import { storageEntities, storageManager } from "./storageService";
 import { taskManager } from "./tasksService";
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -12,8 +12,11 @@ export const solutionService = {
     _formController: taskSolutionFormController,
     _tm: taskManager,
 
-    initForm() {
-        this._formController.init('#task-solution');
+    initForm(data) {
+        // const taskSolutionContainer = document.getElementById('task-solution');
+        this._formController.init('#task-solution', data);
+        // showScroll(taskSolutionContainer);
+
         this._formController.onSave(data => {
             this._setData(data);
             notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square');

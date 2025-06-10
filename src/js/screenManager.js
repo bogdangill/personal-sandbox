@@ -17,7 +17,7 @@ export const screenManager = {
         this._ds.renderView(data);
 
         this._ss.renderSolutionCell();
-        this._ss.initForm();
+        this._ss.initForm(data);
     },
     showFinalStep(data) {
         this._ss.destroyForm();
