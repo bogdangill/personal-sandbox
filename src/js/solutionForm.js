@@ -3,7 +3,7 @@ import { notify } from './helpers';
 import { basicSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { EditorView } from 'codemirror';
-import { EditorState } from '@codemirror/state';
+import { EditorState, StateEffect } from '@codemirror/state';
 import { themeService } from './themeService';
 import { tomorrow } from 'thememirror';
 import { eventBus } from './eventBus';
@@ -23,7 +23,6 @@ export const editorView = {
             state: this._createState(),
             parent: parent
         });
-        
         this._ts.setEditorView(this.instance);
         this._eb.dispatch(editorCreationEvt);
 
@@ -46,7 +45,7 @@ export const editorView = {
                 this._ts.editorTheme.of(tomorrow),
                 keymap.of([indentWithTab]),
                 indentUnit.of("    "),
-                EditorView.lineWrapping
+                EditorView.lineWrapping,
             ]
         });
     },
@@ -55,7 +54,7 @@ export const editorView = {
             "&": {flexGrow: 1},
             ".cm-scroller": {overflow: "auto"}
         });
-    }
+    },
 }
 
 const taskSolutionFormView = {
@@ -98,20 +97,39 @@ export const taskSolutionFormController = {
      * Отключает кнопку сохранения, если поле с решением пустое.
      */
     disableSubmitButton() {
-        // this.form.textarea.addEventListener('input', () => {
-        //     this.form.saveButton.disabled = this.form.textarea.value.trim().length <= 0;
-        // })
+        this.form.editor.instance.dispatch({
+            effects: StateEffect.appendConfig.of(
+                EditorView.updateListener.of(upd => {
+                    if (upd.docChanged) {
+                        this.form.saveButton.disabled = upd.view.state.doc.length <= 1;
+                    }
+                })
+            )
+        });
     },
     execute() {
         this.form.executeButton.addEventListener('click', () => {
-            //будет запускаться анализ кода решения и выводиться результат выполнения console.log или alert();
-            notify('Код выполнился, результат выполнения', 'neutral');
+            if (!this.form.editor.instance) {
+                console.error('Редактор не инициализирован');
+                return;
+            }
+
+            const code = this.form.editor.instance.state.doc.toString();
+
+            if (code.length <= 1) return;
+            
+            try {
+                new Function(code)();
+                notify('Код выполнился, результат в консоли', 'success');
+            } catch (error) {
+                notify(`Ошибка выполнения: ${error.message}`, 'danger');
+            }
         });
     },
     onSave(cb) {
         this.form.saveButton.addEventListener('click', () => {
-            // const data = this.form.textarea.value;
-            // cb(data);
+            const data = this.form.editor.instance.state.doc.toString();
+            cb(data);
         });
     },
     destroy() {
