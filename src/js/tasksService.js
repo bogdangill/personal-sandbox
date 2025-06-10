@@ -12,10 +12,13 @@ function ITask(id, name, text, code, startDate, endDate = startDate, importance 
 
 export const taskManager = {
     addOrUpdateCurrentTask(code) {
-        const descriptionFormData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
-        const descriptionFormObj = JSON.parse(descriptionFormData);
-        const {title, description} = descriptionFormObj;
-        const currentTaskData = this._createTask(title, description, code);
+        const taskData = 
+            storageManager.get(storageEntities.DESCRIPTION_FORM_DATA) ||
+            storageManager.get(storageEntities.CURRENT_TASK_DATA);
+        
+        const descriptionFormObj = JSON.parse(taskData);
+        const {name, text} = descriptionFormObj;
+        const currentTaskData = this._createTask(name, text, code);
         storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
     },
     /**

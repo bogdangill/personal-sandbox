@@ -14,7 +14,7 @@ export const UIComponentFactory = {
     createTaskDescriptionNameInput() {
         return Object.assign(document.createElement('sl-input'), {
             label: 'Название задачи',
-            name: 'title',
+            name: 'name',
             placeholder: 'e.g. Bubble sort',
             clearable: true,
             autocomplete: 'off'
@@ -23,7 +23,7 @@ export const UIComponentFactory = {
     createTaskDescriptionTextarea() {
         return Object.assign(document.createElement('sl-textarea'), {
             label: 'Описание задачи',
-            name: 'description',
+            name: 'text',
             resize: 'auto',
             helpText: 'p.s. описание можно оформить в формате markdown - тогда после сохранения оформленный текст будет выводиться обернутый html-тегами',
             minlength: 10

@@ -29,9 +29,9 @@ export const descriptionService = {
     },
     renderView(data) {
         const taskDescriptionContainer = document.getElementById('task-description');
-        const taskDescriptionObject = JSON.parse(data);
-        const {title, description} = taskDescriptionObject;
-        const taskDescription = `# ${title} \n ${description}`;
+        const taskObj = JSON.parse(data);
+        const {name, text} = taskObj;
+        const taskDescription = `# ${name} \n ${text}`;
         taskDescriptionContainer.innerHTML = marked.parse(taskDescription);
         showScroll(taskDescriptionContainer);
     },
