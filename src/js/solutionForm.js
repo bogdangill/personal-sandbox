@@ -7,6 +7,9 @@ import { EditorState } from '@codemirror/state';
 import { themeService } from './themeService';
 import { tomorrow } from 'thememirror';
 import { eventBus } from './eventBus';
+import { indentWithTab } from '@codemirror/commands';
+import {keymap} from '@codemirror/view';
+import { indentUnit } from '@codemirror/language';
 
 export const editorCreationEvt = 'editor-created';
 
@@ -40,7 +43,10 @@ export const editorView = {
                 basicSetup,
                 javascript(),
                 this._createCustomViewStyle(),
-                this._ts.editorTheme.of(tomorrow)
+                this._ts.editorTheme.of(tomorrow),
+                keymap.of([indentWithTab]),
+                indentUnit.of("    "),
+                EditorView.lineWrapping
             ]
         });
     },
