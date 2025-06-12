@@ -24,12 +24,16 @@ export const solutionService = {
     },
     renderSolutionCell() {
         const root = document.getElementById('root');
-        const solutionCell = UIComponentFactory.createGridCell('💻Решение', 'task-solution');
+        const solutionCell = UIComponentFactory.createGridCell('💻Решение', 'solution-cell', 'task-solution');
         solutionCell.classList.add('ps-grid__cell--bordered');
         root.append(solutionCell);
     },
     destroyForm() {
         this._formController.destroy();
+    },
+    destroyCell() {
+        const cell = document.getElementById('solution-cell');
+        cell.remove();
     },
     renderView(data) {
         const solutionContainer = document.getElementById('task-solution');

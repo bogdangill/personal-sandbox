@@ -142,8 +142,6 @@ export const taskSolutionFormController = {
     },
     destroy() {
         this.form.unmount();
-        this.form = null;
-        this.formElement = null;
     },
 
     async bindEvents() {

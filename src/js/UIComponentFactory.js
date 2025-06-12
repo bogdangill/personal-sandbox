@@ -4,6 +4,9 @@ import '@shoelace-style/shoelace/dist/components/tooltip/tooltip';
 import '@shoelace-style/shoelace/dist/components/textarea/textarea';
 import '@shoelace-style/shoelace/dist/components/input/input';
 import '@shoelace-style/shoelace/dist/components/divider/divider';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown';
+import '@shoelace-style/shoelace/dist/components/menu/menu';
+import '@shoelace-style/shoelace/dist/components/menu-item/menu-item';
 
 /**
  * @namespace
@@ -86,7 +89,7 @@ export const UIComponentFactory = {
         divider.style = '--spacing: 0;';
         return divider;
     },
-    createGridCell(title, id) {
+    createGridCell(title, cellId, containerId) {
         const cell = document.createElement('article');
         const cellHeader = document.createElement('header');
         const cellTitle = document.createElement('h2');
@@ -96,7 +99,8 @@ export const UIComponentFactory = {
         cell.classList.add('ps-grid__cell');
         cellHeader.classList.add('ps-grid__header');
         cellTitle.classList.add('ps-grid__title');
-        cellContainer.id = id;
+        cell.id = cellId;
+        cellContainer.id = containerId;
 
         cellTitle.innerText = title;
         cellHeader.append(cellTitle);
@@ -105,5 +109,32 @@ export const UIComponentFactory = {
         cell.append(cellContainer);
 
         return cell;
+    },
+    createMenu(options) {
+        const menu = document.createElement('sl-menu');
+        
+        for (let option of options) {
+            const item = document.createElement('sl-menu-item');
+            item.setAttribute('value', option.value);
+            item.innerText = option.text;
+            item.onclick = option.handler;
+            menu.appendChild(item);
+        }
+
+        return menu;
+    },
+    createDropdown(triggerText, options) {
+        const ddTrigger = this.createButton('neutral', triggerText);
+        ddTrigger.size = 'small';
+        ddTrigger.caret = true;
+        ddTrigger.slot = 'trigger';
+
+        const menu = this.createMenu(options);
+        const dropdown = document.createElement('sl-dropdown');
+
+        dropdown.appendChild(ddTrigger);
+        dropdown.appendChild(menu);
+
+        return dropdown;
     }
 }

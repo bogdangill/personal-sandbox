@@ -19,13 +19,29 @@ export const descriptionService = {
             notify('Описание успешно сохранено!', 'success', 'check-square');
         });
     },
-    renderDescriptionCell() {
+    renderDescriptionCell(withOptions = false) {
         const root = document.getElementById('root');
-        const descriptionCell = UIComponentFactory.createGridCell('📝Задача', 'task-description');
+        const descriptionCell = UIComponentFactory.createGridCell('📝Задача', 'description-cell', 'task-description');
+        if (withOptions) {
+            const header = descriptionCell.querySelector('header');
+            const options = [
+                {text: 'Изменить', value: 'edit'},
+                {text: 'Удалить', value: 'delete', handler: () => {
+                    this._removeData()
+                }}
+            ];
+            const dropdown = UIComponentFactory.createDropdown('Редактировать', options);
+
+            header.insertAdjacentElement('beforeend', dropdown);
+        }
         root.append(descriptionCell);
     },
     destroyForm() {
         this._formController.destroy();
+    },
+    destroyCell() {
+        const cell = document.getElementById('description-cell');
+        cell.remove();
     },
     renderView(data) {
         const taskDescriptionContainer = document.getElementById('task-description');

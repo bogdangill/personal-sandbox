@@ -28,4 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             screenManager.showResolvingStep(data);
         }
     });
+    storageManager.onRemove(storageEntities.DESCRIPTION_FORM_DATA, () => {
+        screenManager.hideResolvingStep();
+        screenManager.showInitialStep();
+    });
 });
