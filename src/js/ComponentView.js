@@ -1,4 +1,5 @@
-export function ComponentView(root, ...elements) {
+export function ComponentView(parentSelector, root, ...elements) {
+    this.parentSelector = parentSelector;
     this.root = root;
     this.elements = elements;
 
@@ -11,24 +12,20 @@ export function ComponentView(root, ...elements) {
         _mountState = state;
     };
 }
-
-ComponentView.prototype = {
-    constructor: ComponentView,
-    mount(containerSelector) {
-        const isMounted = this.getMountState();
-        if (isMounted) return;
-        const container = document.querySelector(containerSelector);
-        this.appendChildren();
-        container.append(this.root);
-        this.isMounted(true);
-    },
-    unmount() {
-        const isMounted = this.getMountState();
-        if (!isMounted) return;
-        this.root.remove();
-        this.isMounted(false);
-    },
-    appendChildren() {
-        this.elements.forEach(el => this.root.append(el));
-    },
+ComponentView.prototype.mount = function() {
+    const isMounted = this.getMountState();
+    if (isMounted) return;
+    const container = document.querySelector(this.parentSelector);
+    this.appendChildren();
+    container.append(this.root);
+    this.isMounted(true);
+}
+ComponentView.prototype.unmount = function() {
+    const isMounted = this.getMountState();
+    if (!isMounted) return;
+    this.root.remove();
+    this.isMounted(false);
+}
+ComponentView.prototype.appendChildren = function() {
+    this.elements.forEach(el => this.root.append(el));
 }
