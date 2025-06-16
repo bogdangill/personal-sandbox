@@ -1,36 +1,28 @@
 import { UIComponentFactory } from './UIComponentFactory';
+import { ComponentView } from './ComponentView';
 import { notify } from './helpers';
 
-const taskDescriptionFormView = {
-    root: UIComponentFactory.createTaskForm(),
-    nameInput: UIComponentFactory.createTaskDescriptionNameInput(),
-    textarea: UIComponentFactory.createTaskDescriptionTextarea(),
-    submitButton: UIComponentFactory.createButton('primary', 'Создать', true, 'submit'),
-    resetButton: UIComponentFactory.createButton('neutral', 'Сбросить', false, 'reset'),
-    _isMounted: false,
+const createTaskDescriptionForm = () => {
+    const root = UIComponentFactory.createTaskForm();
+    const nameInput = UIComponentFactory.createTaskDescriptionNameInput();
+    const textarea = UIComponentFactory.createTaskDescriptionTextarea();
+    const submitButton = UIComponentFactory.createButton('primary', 'Создать', true, 'submit');
+    const resetButton = UIComponentFactory.createButton('neutral', 'Сбросить', false, 'reset');
+    const formButtons = UIComponentFactory.createFormButtons(submitButton, resetButton);
+    const view = new ComponentView(root, nameInput, textarea, formButtons);
 
-    mount(containerSelector) {
-        const container = document.querySelector(containerSelector);
-        this._appendChildren();
-        container.append(this.root);
-    },
-    unmount() {
-        if (!this._isMounted) return;
-        this.root.remove();
-        this._isMounted = false;
-    },
-    _appendChildren() {
-        if (this._isMounted) return; //избегаю повторного монтирования
-        this.root.append(this.nameInput);
-        this.root.append(this.textarea);
-        this.root.append(UIComponentFactory.createFormButtons(this.submitButton, this.resetButton));
-        this._isMounted = true;
-    },
+    Object.assign(view, {
+        input: nameInput,
+        textarea: textarea,
+        submitButton: submitButton,
+        resetButton: resetButton
+    });
+
+    return view;
 }
 
 export const taskDescriptionFormController = {
-    form: taskDescriptionFormView,
-    formElement: taskDescriptionFormView.root,
+    form: createTaskDescriptionForm(),
 
     init(selector) {
         this.form.mount(selector);
@@ -50,13 +42,13 @@ export const taskDescriptionFormController = {
      * @listens HTMLFormElement
      */
     reset() {
-        this.formElement.reset();
-        this.formElement.addEventListener('reset', () => {
+        this.form.root.reset();
+        this.form.root.addEventListener('reset', () => {
             this.form.submitButton.disabled = true;
         })
     },
     validate() {
-        this.formElement.addEventListener('sl-invalid', evt => {
+        this.form.root.addEventListener('sl-invalid', evt => {
             evt.preventDefault();
             notify(`Ошибка: ${evt.target.validationMessage}`);
             evt.target.focus();
@@ -67,10 +59,10 @@ export const taskDescriptionFormController = {
      * @param {function(data: Object): void} callback
      */
     onSubmit(cb) {
-        this.formElement.addEventListener('submit', evt => {
+        this.form.root.addEventListener('submit', evt => {
             evt.preventDefault();
 
-            const formData = new FormData(this.formElement);
+            const formData = new FormData(this.form.root);
             const data = {};
 
             formData.forEach((val, key) => {
