@@ -1,92 +1,71 @@
 import { UIComponentFactory } from './UIComponentFactory';
 import { ComponentView } from './ComponentView';
 import { notify } from './helpers';
+import { ComponentController } from './ComponentController';
 
-const createTaskDescriptionForm = () => {
+function DescriptionFormView(parent) {
+    this.input = UIComponentFactory.createTaskDescriptionNameInput();
+    this.textarea = UIComponentFactory.createTaskDescriptionTextarea();
+    this.submitButton = UIComponentFactory.createButton('primary', 'Создать', true, 'submit');
+    this.resetButton = UIComponentFactory.createButton('neutral', 'Сбросить', false, 'reset');
+
     const root = UIComponentFactory.createTaskForm();
-    const nameInput = UIComponentFactory.createTaskDescriptionNameInput();
-    const textarea = UIComponentFactory.createTaskDescriptionTextarea();
-    const submitButton = UIComponentFactory.createButton('primary', 'Создать', true, 'submit');
-    const resetButton = UIComponentFactory.createButton('neutral', 'Сбросить', false, 'reset');
-    const formButtons = UIComponentFactory.createFormButtons(submitButton, resetButton);
-    const view = new ComponentView(root, nameInput, textarea, formButtons);
+    const formButtons = UIComponentFactory.createFormButtons(this.submitButton, this.resetButton);
 
-    Object.assign(view, {
-        input: nameInput,
-        textarea: textarea,
-        submitButton: submitButton,
-        resetButton: resetButton
-    });
-
-    return view;
+    ComponentView.call(this, parent, root, this.input, this.textarea, formButtons);
 }
+DescriptionFormView.prototype = Object.create(ComponentView.prototype);
+DescriptionFormView.prototype.constructor = DescriptionFormView;
 
-export const taskDescriptionFormController = {
-    form: createTaskDescriptionForm(),
+export function DescriptionFormController(parent) {
+    this.form = new DescriptionFormView(parent);
+    ComponentController.call(this, this.form); //вызываю конструктор ComponentController (super)
+}
+DescriptionFormController.prototype = Object.create(ComponentController.prototype); //наследую (extends)
+DescriptionFormController.prototype.constructor = DescriptionFormController;
 
-    init(selector) {
-        this.form.mount(selector);
-        this.bindEvents();
-    },
-    /**
-     * Отключает кнопку отправки, если текстовое поле пустое.
-     * @listens sl-input
-     */
-    disableSubmitButton() {
-        this.form.textarea.addEventListener('sl-input', () => {
-            this.form.submitButton.disabled = this.form.textarea.value.trim().length <= 0;
-        })
-    },
-    /**
-     * Очищает поля формы и отключает кнопку отправки.
-     * @listens HTMLFormElement
-     */
-    reset() {
-        this.form.root.reset();
-        this.form.root.addEventListener('reset', () => {
-            this.form.submitButton.disabled = true;
-        })
-    },
-    validate() {
-        this.form.root.addEventListener('sl-invalid', evt => {
-            evt.preventDefault();
-            notify(`Ошибка: ${evt.target.validationMessage}`);
-            evt.target.focus();
-        },{ capture: true })
-    },
-    /**
-     * Регистрирует обработчик отправки формы
-     * @param {function(data: Object): void} callback
-     */
-    onSubmit(cb) {
-        this.form.root.addEventListener('submit', evt => {
-            evt.preventDefault();
+DescriptionFormController.prototype.disableSubmitButton = function() {
+    this.form.textarea.addEventListener('sl-input', () => {
+        this.form.submitButton.disabled = this.form.textarea.value.trim().length <= 0;
+    })
+}
+DescriptionFormController.prototype.reset = function() {
+    this.form.root.reset();
+    this.form.root.addEventListener('reset', () => {
+        this.form.submitButton.disabled = true;
+    })
+}
+DescriptionFormController.prototype.validate = function() {
+    this.form.root.addEventListener('sl-invalid', evt => {
+        evt.preventDefault();
+        notify(`Ошибка: ${evt.target.validationMessage}`);
+        evt.target.focus();
+    },{ capture: true })
+}
+DescriptionFormController.prototype.onSubmit = function(cb) {
+    this.form.root.addEventListener('submit', evt => {
+        evt.preventDefault();
 
-            const formData = new FormData(this.form.root);
-            const data = {};
+        const formData = new FormData(this.view.root);
+        const data = {};
 
-            formData.forEach((val, key) => {
-                data[key] = val
-            });
-
-            if (typeof cb === 'function') {
-                cb(data);
-            }
-        })
-    },
-    destroy() {
-        this.form.unmount();
-    },
-
-    async bindEvents() {
-        await Promise.all([
-            customElements.whenDefined('sl-input'),
-            customElements.whenDefined('sl-textarea'),
-            customElements.whenDefined('sl-button')
-        ]).then(() => {
-            this.disableSubmitButton();
-            this.validate();
-            this.reset();
+        formData.forEach((val, key) => {
+            data[key] = val
         });
-    },
+
+        if (typeof cb === 'function') {
+            cb(data);
+        }
+    })
+}
+DescriptionFormController.prototype.bindEvents = async function() {
+    await Promise.all([
+        customElements.whenDefined('sl-input'),
+        customElements.whenDefined('sl-textarea'),
+        customElements.whenDefined('sl-button')
+    ]).then(() => {
+        this.disableSubmitButton();
+        this.validate();
+        this.reset();
+    });
 }

@@ -1,16 +1,16 @@
 import { marked } from "marked";
 import { UIComponentFactory } from "./UIComponentFactory";
-import { taskDescriptionFormController } from "./descriptionForm";
+import { DescriptionFormController } from "./descriptionForm";
 import { fillDescriptionForm, notify, showScroll } from "./helpers";
 import { storageEntities, storageManager } from "./storageService";
 
 export const descriptionService = {
     _sm: storageManager,
-    _formController: taskDescriptionFormController,
+    _formController: new DescriptionFormController('#task-description'),
 
     initForm() {
         const taskDescriptionContainer = document.getElementById('task-description');
-        this._formController.init('#task-description');
+        this._formController.init();
         showScroll(taskDescriptionContainer);
         fillDescriptionForm(this._formController.form);
 
