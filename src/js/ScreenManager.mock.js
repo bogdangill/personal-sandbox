@@ -7,7 +7,7 @@ export function ScreenManager() {
 }
 ScreenManager.prototype.showComponent = function() {
     this.ss.renderCell();
-    this.ss.init();
+    this.ss.initForm();
 }
 ScreenManager.prototype.hideComponent = function() {
     this.ss.destroyForm();

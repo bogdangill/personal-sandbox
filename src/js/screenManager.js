@@ -1,9 +1,9 @@
 import { descriptionService } from './descriptionService';
-import { solutionService } from './solutionService';
+import { SolutionService, solutionService } from './solutionService';
 
 export const screenManager = {
     _ds: descriptionService,
-    _ss: solutionService,
+    _ss: new SolutionService(),
     _currentStep: 0,
 
     showInitialStep() {
@@ -19,7 +19,7 @@ export const screenManager = {
         this._ds.renderDescriptionCell(true);
         this._ds.renderView(data);
 
-        this._ss.renderSolutionCell();
+        this._ss.renderCell();
         this._ss.initForm(data);
     },
     hideResolvingStep() {
@@ -29,7 +29,7 @@ export const screenManager = {
     },
     showFinalStep(data) {
         this._ss.destroyForm();
-        this._ss.renderSolutionCell();
+        this._ss.renderCell();
         this._ss.renderView(data);
     },
 }
