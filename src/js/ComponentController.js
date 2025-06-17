@@ -2,7 +2,6 @@ export function ComponentController(view) {
     this.view = view;
 }
 ComponentController.prototype.init = function() {
-    if (this.view) this.destroy();
     this.view.mount();
     this.bindEvents();
 };
