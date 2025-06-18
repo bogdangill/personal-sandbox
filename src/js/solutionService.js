@@ -4,23 +4,16 @@ import { SolutionFormController, SolutionFormView } from "./solutionForm";
 import { taskManager } from "./tasksService";
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
-import { InstanceManager } from "./InstanceManager";
+import { ComponentService } from "./ComponentService";
 hljs.registerLanguage('javascript', javascript);
 
 export function SolutionService() {
     this.tm = taskManager;
-    this.im = new InstanceManager();
-
-    this.registerInstances = (view, controller) => {
-        this.im.register('view', view);
-        this.im.register('controller', controller);
-    };
-    this.getView = () => this.im.get('view');
-    this.getController = () => this.im.get('controller');
-    this.clearInstances = () => {
-        this.im.clearAll();
-    };
+    ComponentService.call(this);
 }
+SolutionService.prototype = Object.create(ComponentService.prototype);
+SolutionService.prototype.constructor = SolutionService;
+
 SolutionService.prototype.initForm = function(data) {
     const view = new SolutionFormView('#task-solution');
     const controller = new SolutionFormController(view);
