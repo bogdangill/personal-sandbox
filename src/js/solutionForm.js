@@ -58,7 +58,8 @@ SolutionFormView.prototype = Object.create(ComponentView.prototype);
 SolutionFormView.prototype.constructor = SolutionFormView;
 
 export function SolutionFormController(view) {
-    ComponentController.call(this, view);
+    this.form = view;
+    ComponentController.call(this, this.form);
 }
 SolutionFormController.prototype = Object.create(ComponentController.prototype);
 SolutionFormController.prototype.constructor = SolutionFormController;
@@ -69,26 +70,26 @@ SolutionFormController.prototype.init = function(data = null) {
 
     if (data) {
         const currentTaskObj = JSON.parse(data);
-        const value = this.view.editor.state.update({
+        const value = this.form.editor.state.update({
             changes: {from: 0, insert: currentTaskObj.code}
         });
-        this.view.editor.dispatch(value);
+        this.form.editor.dispatch(value);
     }
 }
 SolutionFormController.prototype.disableSaveButton = function() {
-    this.view.editor.dispatch({
+    this.form.editor.dispatch({
         effects: StateEffect.appendConfig.of(
             EditorView.updateListener.of(upd => {
                 if (upd.docChanged) {
-                    this.view.saveButton.disabled = upd.view.state.doc.length <= 1;
+                    this.form.saveButton.disabled = upd.view.state.doc.length <= 1;
                 }
             })
         )
     });
 }
 SolutionFormController.prototype.execute = function() {
-    this.view.executeButton.addEventListener('click', () => {
-        const code = this.view.editor.state.doc.toString();
+    this.form.executeButton.addEventListener('click', () => {
+        const code = this.form.editor.state.doc.toString();
 
         if (code.length <= 1) return;
         
@@ -101,8 +102,8 @@ SolutionFormController.prototype.execute = function() {
     });
 }
 SolutionFormController.prototype.onSave = function(cb) {
-    this.view.saveButton.addEventListener('click', () => {
-        const data = this.view.editor.state.doc.toString();
+    this.form.saveButton.addEventListener('click', () => {
+        const data = this.form.editor.state.doc.toString();
         cb(data);
     });
 }

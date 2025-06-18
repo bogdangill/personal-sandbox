@@ -12,17 +12,17 @@ import { ScreenManager } from './js/ScreenManager.mock';
 
 document.addEventListener('DOMContentLoaded', () => {
     themeService.init();
-    const root = document.querySelector('#root');
-    const btnCreate = UIComponentFactory.createButton('primary', 'Создать компонент');
-    const btnDestroy = UIComponentFactory.createButton('danger', 'Удалить компонент');
-    root.append(btnCreate, btnDestroy);
+    // const root = document.querySelector('#root');
+    // const btnCreate = UIComponentFactory.createButton('primary', 'Создать компонент');
+    // const btnDestroy = UIComponentFactory.createButton('danger', 'Удалить компонент');
+    // root.append(btnCreate, btnDestroy);
 
-    const manager = new ScreenManager();
+    // const manager = new ScreenManager();
 
-    btnCreate.onclick = manager.showComponent.bind(manager);
-    btnDestroy.onclick = manager.hideComponent.bind(manager);
+    // btnCreate.onclick = manager.showComponent.bind(manager);
+    // btnDestroy.onclick = manager.hideComponent.bind(manager);
     
-    return;
+    // return;
     const taskDescriptionData = storageManager.get(storageEntities.DESCRIPTION_FORM_DATA);
     const currentTaskData = storageManager.get(storageEntities.CURRENT_TASK_DATA);
 
