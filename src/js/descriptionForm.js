@@ -3,7 +3,7 @@ import { ComponentView } from './ComponentView';
 import { notify } from './helpers';
 import { ComponentController } from './ComponentController';
 
-function DescriptionFormView(parent) {
+export function DescriptionFormView(parent) {
     this.input = UIComponentFactory.createTaskDescriptionNameInput();
     this.textarea = UIComponentFactory.createTaskDescriptionTextarea();
     this.submitButton = UIComponentFactory.createButton('primary', 'Создать', true, 'submit');
@@ -17,8 +17,8 @@ function DescriptionFormView(parent) {
 DescriptionFormView.prototype = Object.create(ComponentView.prototype);
 DescriptionFormView.prototype.constructor = DescriptionFormView;
 
-export function DescriptionFormController(parent) {
-    this.form = new DescriptionFormView(parent);
+export function DescriptionFormController(view) {
+    this.form = view;
     ComponentController.call(this, this.form); //вызываю конструктор ComponentController (super)
 }
 DescriptionFormController.prototype = Object.create(ComponentController.prototype); //наследую (extends)
