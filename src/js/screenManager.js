@@ -1,13 +1,13 @@
-import { descriptionService } from './descriptionService';
+import { DescriptionService, descriptionService } from './descriptionService';
 import { SolutionService, solutionService } from './solutionService';
 
 export const screenManager = {
-    _ds: descriptionService,
+    _ds: new DescriptionService(),
     _ss: new SolutionService(),
     _currentStep: 0,
 
     showInitialStep() {
-        this._ds.renderDescriptionCell();
+        this._ds.renderCell();
         this._ds.initForm();
 
         this._currentStep++;
@@ -16,7 +16,7 @@ export const screenManager = {
         this._ds.destroyForm();
         if (this._currentStep) this._ds.destroyCell();
 
-        this._ds.renderDescriptionCell(true);
+        this._ds.renderCell(true);
         this._ds.renderView(data);
 
         this._ss.renderCell();

@@ -1,8 +1,8 @@
-import { descriptionService } from "./descriptionService";
-import { SolutionService, solutionService } from "./solutionService";
+import { DescriptionService } from "./descriptionService";
+import { SolutionService } from "./solutionService";
 
 export function ScreenManager() {
-    this.ds = descriptionService;
+    this.ds = new DescriptionService();
     this.ss = new SolutionService();
 }
 ScreenManager.prototype.showComponent = function() {
