@@ -1,52 +1,51 @@
 import { UIComponentFactory } from "./UIComponentFactory";
 import { notify, showScroll } from "./helpers";
-import { taskSolutionFormController } from "./solutionForm";
-import { storageEntities, storageManager } from "./storageService";
+import { SolutionFormController, SolutionFormView } from "./solutionForm";
 import { taskManager } from "./tasksService";
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
+import { ComponentService } from "./ComponentService";
 hljs.registerLanguage('javascript', javascript);
 
-export const solutionService = {
-    _sm: storageManager,
-    _formController: taskSolutionFormController,
-    _tm: taskManager,
+export function SolutionService() {
+    this.tm = taskManager;
+    ComponentService.call(this);
+}
+SolutionService.prototype = Object.create(ComponentService.prototype);
+SolutionService.prototype.constructor = SolutionService;
 
-    initForm(data) {
-        // const taskSolutionContainer = document.getElementById('task-solution');
-        this._formController.init('#task-solution', data);
-        // showScroll(taskSolutionContainer);
+SolutionService.prototype.initForm = function(data) {
+    const view = new SolutionFormView('#task-solution');
+    const controller = new SolutionFormController(view);
+    this.registerInstances(view, controller);
 
-        this._formController.onSave(data => {
-            this._setData(data);
-            notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square');
-        });
-    },
-    renderSolutionCell() {
-        const root = document.getElementById('root');
-        const solutionCell = UIComponentFactory.createGridCell('💻Решение', 'solution-cell', 'task-solution');
-        solutionCell.classList.add('ps-grid__cell--bordered');
-        root.append(solutionCell);
-    },
-    destroyForm() {
-        this._formController.destroy();
-    },
-    destroyCell() {
-        const cell = document.getElementById('solution-cell');
-        cell.remove();
-    },
-    renderView(data) {
-        const solutionContainer = document.getElementById('task-solution');
-        const currentTaskObj = JSON.parse(data);
-        const {code} = currentTaskObj;
-        const highlightedCode = hljs.highlight(code, { language: 'javascript' }).value;
-        solutionContainer.innerHTML = highlightedCode;
-        showScroll(solutionContainer);
-    },
-    _getData() {
-        return this._sm.get(storageEntities.CURRENT_TASK_DATA);
-    },
-    _setData(data) {
-        return this._tm.addOrUpdateCurrentTask(data);
-    }
+    controller.init(data);
+
+    controller.onSave(data => {
+        this.tm.addOrUpdateCurrentTask(data);
+        notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square');
+    });
+}
+SolutionService.prototype.renderCell = function() {
+    const root = document.getElementById('root');
+    const solutionCell = UIComponentFactory.createGridCell('💻Решение', 'solution-cell', 'task-solution');
+    solutionCell.classList.add('ps-grid__cell--bordered');
+    root.append(solutionCell);
+}
+SolutionService.prototype.destroyForm = function() {
+    const controller = this.getController();
+    controller.destroy();
+    this.clearInstances();
+}
+SolutionService.prototype.destroyCell = function() {
+    const cell = document.getElementById('solution-cell');
+    cell.remove();
+}
+SolutionService.prototype.renderView = function(data) {
+    const solutionContainer = document.getElementById('task-solution');
+    const currentTaskObj = JSON.parse(data);
+    const {code} = currentTaskObj;
+    const highlightedCode = hljs.highlight(code, { language: 'javascript' }).value;
+    solutionContainer.innerHTML = highlightedCode;
+    showScroll(solutionContainer);
 }

@@ -45,7 +45,7 @@ export async function fillDescriptionForm(form) {
             return {text: 'депрессивный дескрипшн надо сгенерить какой-то бред из головы'}
         });
 
-    form.nameInput.value = title.text;
+    form.input.value = title.text;
     form.textarea.value = description.text;
     form.textarea.dispatchEvent(new CustomEvent('sl-input')); //для валидации по disableSubmitButton()
 }

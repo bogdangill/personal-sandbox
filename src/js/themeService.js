@@ -3,7 +3,6 @@ import { UIComponentFactory } from "./UIComponentFactory";
 import { storageEntities, storageManager } from "./storageService";
 import { barf, tomorrow } from "thememirror";
 import { eventBus } from "./eventBus";
-import { editorCreationEvt } from "./solutionForm";
 
 const themeSwitcherData = Object.freeze({
     'dark': {
@@ -84,10 +83,6 @@ export const themeService = {
             this._setCurrentClass(current);
         }
 
-        this._eb.listen(editorCreationEvt, () => {
-            this._setEditorTheme(themeState);
-        });
-
         this._switcherController.updateState(themeState);
 
         this._switcherController.onSwitching(() => {
@@ -102,6 +97,8 @@ export const themeService = {
     },
     setEditorView(view) {
         this._editorView = view;
+        const currentTheme = this._getCurrentKey() || this._getSystemPrefered();
+        this._setEditorTheme(currentTheme);
     }, 
     _setCurrentClass(key) {
         if (key === themeServiceData.keyDark) {

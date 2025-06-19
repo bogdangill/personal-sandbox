@@ -1,13 +1,13 @@
-import { descriptionService } from './descriptionService';
-import { solutionService } from './solutionService';
+import { DescriptionService, descriptionService } from './descriptionService';
+import { SolutionService, solutionService } from './solutionService';
 
 export const screenManager = {
-    _ds: descriptionService,
-    _ss: solutionService,
+    _ds: new DescriptionService(),
+    _ss: new SolutionService(),
     _currentStep: 0,
 
     showInitialStep() {
-        this._ds.renderDescriptionCell();
+        this._ds.renderCell();
         this._ds.initForm();
 
         this._currentStep++;
@@ -16,10 +16,10 @@ export const screenManager = {
         this._ds.destroyForm();
         if (this._currentStep) this._ds.destroyCell();
 
-        this._ds.renderDescriptionCell(true);
+        this._ds.renderCell(true);
         this._ds.renderView(data);
 
-        this._ss.renderSolutionCell();
+        this._ss.renderCell();
         this._ss.initForm(data);
     },
     hideResolvingStep() {
@@ -29,7 +29,7 @@ export const screenManager = {
     },
     showFinalStep(data) {
         this._ss.destroyForm();
-        this._ss.renderSolutionCell();
+        this._ss.renderCell();
         this._ss.renderView(data);
     },
 }
