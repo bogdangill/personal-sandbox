@@ -1,5 +1,5 @@
-import { DescriptionService, descriptionService } from './descriptionService';
-import { SolutionService, solutionService } from './solutionService';
+import { DescriptionService } from './descriptionService';
+import { SolutionService } from './solutionService';
 
 export const screenManager = {
     _ds: new DescriptionService(),

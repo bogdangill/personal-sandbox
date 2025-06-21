@@ -1,101 +1,109 @@
 import { eventBus } from "./eventBus";
 
-/**
- * Сущности хранилища и их конфигурация:
- * - DESCRIPTION_FORM_DATA: данные формы описания задачи (sessionStorage).
- * - TASKS_DATA: список всех задач (localStorage).
- * - CURRENT_TASK_DATA: текущая редактируемая задача (localStorage).
- * - События: `${key}-updated` (например, "tasks-data-updated").
- */
-export const storageEntities = Object.freeze({
-    DESCRIPTION_FORM_DATA: 'descriptionFormData',
-    CURRENT_TASK_DATA: 'currentTaskData',
-    TASKS_DATA: 'tasksData',
-    CURRENT_THEME: 'currentTheme',
-});
+//создаю скрытые методы и свойства для объекта StorageService, защищаясь от нечаянного использования 
+//или перезаписи при дальнейшем масштабировании кода. Еще их не будет видно в качестве 
+//доступных методов при создании и использовании экземпляра StorageService.
+const _storageConfig = Symbol('_storageConfig');
+const _getConfig = Symbol('_getConfig');
+const _getStorage = Symbol('_getStorage');
+const _getEventName = Symbol('_getEventName');
 
-const storageConfig = {
-    [storageEntities.DESCRIPTION_FORM_DATA]: {
-        key: 'description-form-data',
-        storage: 'session',
-    },
-    [storageEntities.CURRENT_TASK_DATA]: {
-        key: 'current-task-data',
-        storage: 'local',
-    },
-    [storageEntities.TASKS_DATA]: {
-        key: 'tasks-data',
-        storage: 'local',
-    },
-    [storageEntities.CURRENT_THEME]: {
-        key: 'current-theme',
-        storage: 'local'
-    }
-};
-
-export const storageManager = {
+export function StorageService() {
     /**
-     * забирает данные по ключу из Storage
-     * @param {storageEntities} entity - название ключа из Storage
-     * @param {string | object} data
+     * Сущности хранилища и их конфигурация:
+     * - TASKS_DATA: список всех задач (localStorage).
+     * - CURRENT_TASK_DATA: текущая редактируемая или только что созданная задача (localStorage).
+     * - CURRENT_THEME: текущая тема оформления приложения
+     * - События: `${key}-updated` (например, "tasks-data-updated").
      */
-    get(entity) {
-        const config = this._getConfig(entity);
-        const storage = this._getStorage(config.storage);
-        const data = storage.getItem(config.key);
-
-        return data ? typeof data === 'string' ? data : JSON.parse(data) : null;
-    },
-    /**
-     * устанавливает значение ключа в Storage и публикует соответствующее ему событие
-     * @param {storageEntities} entity - название ключа из Storage
-     * @param {string | object} data
-     */
-    set(entity, data, createEvent = true) {
-        const config = this._getConfig(entity);
-        const storage = this._getStorage(config.storage);
-
-        if (typeof data !== 'string') data = JSON.stringify(data);
-
-        storage.setItem(config.key, data);
-
-        if (createEvent) eventBus.dispatch(this._getEventName(entity, 'updated'));
-    },
-    remove(entity, createEvent = true) {
-        const config = this._getConfig(entity);
-        const storage = this._getStorage(config.storage);
-        const data = storage.getItem(config.key);
-
-        if (data === null) {
-            throw new Error(`Невозможно удалить: ${config.key} отсутствует в ${config.storage} хранилище!`);
+    this.entities = Object.freeze({
+        CURRENT_TASK_DATA: 'currentTaskData',
+        TASKS_DATA: 'tasksData',
+        CURRENT_THEME: 'currentTheme',
+    });
+    this[_storageConfig] = {
+        [this.entities.CURRENT_TASK_DATA]: {
+            key: 'current-task-data',
+            storage: 'local',
+        },
+        [this.entities.TASKS_DATA]: {
+            key: 'tasks-data',
+            storage: 'local',
+        },
+        [this.entities.CURRENT_THEME]: {
+            key: 'current-theme',
+            storage: 'local'
         }
+    };
+}
+StorageService.prototype[_getConfig] = function(entity) {
+    const config = this[_storageConfig][entity];
+    if (!config) throw new Error(`Неизвестная сущность хранилища: ${entity}`);
+    return config;
+}
+StorageService.prototype[_getStorage] = function(type) {
+    return type === 'session' ? sessionStorage : localStorage;
+}
+StorageService.prototype[_getEventName] = function(entity, suffix) {
+    const config = this[_getConfig](entity);
+    return `${config.key}-${suffix}`;
+}
+/**
+ * забирает данные по ключу из Storage
+ * @param {entities} entity - название ключа из Storage
+ */
+StorageService.prototype.get = function(entity) {
+    const config = this[_getConfig](entity);
+    const storage = this[_getStorage](config.storage);
+    const data = storage.getItem(config.key);
 
-        storage.removeItem(config.key);
-        eventBus.remove(this._getEventName(entity, 'updated'));
+    return data ? typeof data === 'string' ? data : JSON.parse(data) : null;
+}
+/**
+ * устанавливает значение ключа в Storage и публикует соответствующее ему событие(опционально)
+ * @param {entities} entity - название ключа из Storage
+ */
+StorageService.prototype.set = function(entity, data, createEvent = true) {
+    const config = this[_getConfig](entity);
+    const storage = this[_getStorage](config.storage);
 
-        if (createEvent) eventBus.dispatch(this._getEventName(entity, 'deleted'));
-    },
-    /**
-     * хук для отлова опубликованного события обновления Storage
-     * @param {storageEntities} entity - название ключа из Storage
-     * @param {function} cb - коллбэк-функция, которая триггерится во время события
-     */
-    onUpdate(entity, cb) {
-        eventBus.listen(this._getEventName(entity, 'updated'), cb);
-    },
-    onRemove(entity, cb) {
-        eventBus.listen(this._getEventName(entity, 'deleted'), cb);
-    },
-    _getConfig(entity) {
-        const config = storageConfig[entity];
-        if (!config) throw new Error(`Неизвестная сущность хранилища: ${entity}`);
-        return config;
-    },
-    _getStorage(type) {
-        return type === 'session' ? sessionStorage : localStorage;
-    },
-    _getEventName(entity, suffix) {
-        const config = this._getConfig(entity);
-        return `${config.key}-${suffix}`;
+    if (typeof data !== 'string') data = JSON.stringify(data);
+
+    storage.setItem(config.key, data);
+
+    if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'updated'));
+}
+/**
+ * устанавливает данные по ключу в Storage и публикует соответствующее ему событие(опционально)
+ * @param {entities} entity - название ключа из Storage
+ */
+StorageService.prototype.remove = function(entity, createEvent = true) {
+    const config = this[_getConfig](entity);
+    const storage = this[_getStorage](config.storage);
+    const data = storage.getItem(config.key);
+
+    if (data === null) {
+        throw new Error(`Невозможно удалить: ${config.key} отсутствует в ${config.storage} хранилище!`);
     }
+
+    storage.removeItem(config.key);
+    eventBus.remove(this[_getEventName](entity, 'updated'));
+
+    if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'deleted'));
+}
+/**
+ * хук для отлова опубликованного события обновления Storage
+ * @param {entities} entity - название ключа из Storage
+ * @param {function} cb - коллбэк-функция, которая триггерится во время события
+ */
+StorageService.prototype.onUpdate = function(entity, cb) {
+    eventBus.listen(this[_getEventName](entity, 'updated'), cb);
+}
+/**
+ * хук для отлова опубликованного события удаленного ключа с данными из Storage
+ * @param {entities} entity - название ключа из Storage
+ * @param {function} cb - коллбэк-функция, которая триггерится во время события
+ */
+StorageService.prototype.onRemove = function(entity, cb) {
+    eventBus.listen(this[_getEventName](entity, 'deleted'), cb);
 }
