@@ -8,34 +8,33 @@ const _getConfig = Symbol('_getConfig');
 const _getStorage = Symbol('_getStorage');
 const _getEventName = Symbol('_getEventName');
 
-export function StorageService() {
-    /**
-     * Сущности хранилища и их конфигурация:
-     * - TASKS_DATA: список всех задач (localStorage).
-     * - CURRENT_TASK_DATA: текущая редактируемая или только что созданная задача (localStorage).
-     * - CURRENT_THEME: текущая тема оформления приложения
-     * - События: `${key}-updated` (например, "tasks-data-updated").
-     */
-    this.entities = Object.freeze({
-        CURRENT_TASK_DATA: 'currentTaskData',
-        TASKS_DATA: 'tasksData',
-        CURRENT_THEME: 'currentTheme',
-    });
-    this[_storageConfig] = {
-        [this.entities.CURRENT_TASK_DATA]: {
-            key: 'current-task-data',
-            storage: 'local',
-        },
-        [this.entities.TASKS_DATA]: {
-            key: 'tasks-data',
-            storage: 'local',
-        },
-        [this.entities.CURRENT_THEME]: {
-            key: 'current-theme',
-            storage: 'local'
-        }
-    };
-}
+export function StorageService() {}
+/**
+ * Сущности хранилища и их конфигурация:
+ * - TASKS_DATA: список всех задач (localStorage).
+ * - CURRENT_TASK_DATA: текущая редактируемая или только что созданная задача (localStorage).
+ * - CURRENT_THEME: текущая тема оформления приложения
+ * - События: `${key}-created` (например, "tasks-data-created").
+ */
+StorageService.prototype.entities = Object.freeze({
+    CURRENT_TASK_DATA: 'currentTaskData',
+    TASKS_DATA: 'tasksData',
+    CURRENT_THEME: 'currentTheme',
+});
+StorageService.prototype[_storageConfig] = {
+    [StorageService.prototype.entities.CURRENT_TASK_DATA]: {
+        key: 'current-task-data',
+        storage: 'local',
+    },
+    [StorageService.prototype.entities.TASKS_DATA]: {
+        key: 'tasks-data',
+        storage: 'local',
+    },
+    [StorageService.prototype.entities.CURRENT_THEME]: {
+        key: 'current-theme',
+        storage: 'local'
+    }
+};
 StorageService.prototype[_getConfig] = function(entity) {
     const config = this[_storageConfig][entity];
     if (!config) throw new Error(`Неизвестная сущность хранилища: ${entity}`);
@@ -57,7 +56,7 @@ StorageService.prototype.get = function(entity) {
     const storage = this[_getStorage](config.storage);
     const data = storage.getItem(config.key);
 
-    return data ? typeof data === 'string' ? data : JSON.parse(data) : null;
+    return data || null;
 }
 /**
  * устанавливает значение ключа в Storage и публикует соответствующее ему событие(опционально)
@@ -71,7 +70,7 @@ StorageService.prototype.set = function(entity, data, createEvent = true) {
 
     storage.setItem(config.key, data);
 
-    if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'updated'));
+    if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'created'));
 }
 /**
  * устанавливает данные по ключу в Storage и публикует соответствующее ему событие(опционально)
@@ -87,7 +86,7 @@ StorageService.prototype.remove = function(entity, createEvent = true) {
     }
 
     storage.removeItem(config.key);
-    eventBus.remove(this[_getEventName](entity, 'updated'));
+    eventBus.remove(this[_getEventName](entity, 'created'));
 
     if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'deleted'));
 }
@@ -96,8 +95,8 @@ StorageService.prototype.remove = function(entity, createEvent = true) {
  * @param {entities} entity - название ключа из Storage
  * @param {function} cb - коллбэк-функция, которая триггерится во время события
  */
-StorageService.prototype.onUpdate = function(entity, cb) {
-    eventBus.listen(this[_getEventName](entity, 'updated'), cb);
+StorageService.prototype.onCreate = function(entity, cb) {
+    eventBus.listen(this[_getEventName](entity, 'created'), cb);
 }
 /**
  * хук для отлова опубликованного события удаленного ключа с данными из Storage
