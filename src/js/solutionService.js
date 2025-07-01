@@ -22,8 +22,9 @@ SolutionService.prototype.initForm = function(data) {
     controller.init(data);
 
     controller.onSave(data => {
-        this.tm.addOrUpdateCurrentTask(data);
-        notify('Задача сохранена и добавлена в коллекцию!', 'success', 'check-square');
+        // this.tm.saveCurrentTask(data);
+        this.tm.updateCurrent({code: data});
+        notify('Задача сохранена', 'success', 'check-square');
     });
 }
 SolutionService.prototype.renderCell = function() {

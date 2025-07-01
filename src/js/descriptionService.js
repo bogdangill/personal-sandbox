@@ -4,9 +4,11 @@ import { DescriptionFormController, DescriptionFormView } from "./descriptionFor
 import { fillDescriptionForm, notify, showScroll } from "./helpers";
 import { StorageService } from "./storageService";
 import { ComponentService } from "./ComponentService";
+import { taskManager } from "./tasksService";
 
 export function DescriptionService() {
     this.storage = new StorageService();
+    this.taskManager = taskManager;
     ComponentService.call(this);
 }
 DescriptionService.prototype = Object.create(ComponentService.prototype);
@@ -23,7 +25,8 @@ DescriptionService.prototype.initForm = function() {
     fillDescriptionForm(controller.form);
 
     controller.onSubmit(data => {
-        this.storage.set(this.storage.entities.CURRENT_TASK_DATA, data);
+        this.taskManager.addCurrent(data);
+        // this.storage.set(this.storage.entities.CURRENT_TASK_DATA, data);
         notify('Описание успешно сохранено!', 'success', 'check-square');
     });
 }

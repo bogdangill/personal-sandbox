@@ -1,4 +1,4 @@
-import { storageEntities, storageManager } from "./storageService";
+import { StorageService } from "./storageService";
 
 function ITask(id, name, text, code, startDate, endDate = startDate, importance = null) {
     this.id = id;
@@ -11,30 +11,44 @@ function ITask(id, name, text, code, startDate, endDate = startDate, importance 
 }
 
 export const taskManager = {
-    addOrUpdateCurrentTask(code) {
-        const taskData = 
-            storageManager.get(storageEntities.DESCRIPTION_FORM_DATA) ||
-            storageManager.get(storageEntities.CURRENT_TASK_DATA);
-        
-        const descriptionFormObj = JSON.parse(taskData);
-        const {name, text} = descriptionFormObj;
-        const currentTaskData = this._createTask(name, text, code);
-        storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
+    _storage: new StorageService(),
+
+    addCurrent(data) {
+        //надо перенести логику из createTask сюда
+        const {name, text} = data;
+        const taskObj = this._createTask(name, text, null);
+        this._storage.set(this._storage.entities.CURRENT_TASK_DATA, taskObj);
+    },
+    updateCurrent(data) {
+        debugger;
+        const currentTask = JSON.parse(this._storage.get(this._storage.entities.CURRENT_TASK_DATA));
+        const {name, text, code} = data;
+        //проблема - createTask обновляет айди и другие статичные данные, которые нет смысла обновлять
+        const updatedTask = this._createTask(name ?? currentTask.name, text ?? currentTask.text, code ?? currentTask.code);
+        this._storage.set(this._storage.entities.CURRENT_TASK_DATA, updatedTask, false);
+
+        // if (typeof data === 'string') {
+        //     const code = data;
+        //     this.addCurrent(code, false);
+        // } else {
+        //     const code = currentTask.code || null;
+        //     this.addCurrent(code, false);
+        // }
     },
     /**
-     * Сохраняет текущую задачу в коллекцию-архив (берет данные по задаче из current-task-data в LS)
+     * Сохраняет текущую задачу в коллекцию-архив
      */
-    saveCurrentTask() {
-        const tasks = this._getAllTasks();
-        const currentTask = storageManager.get(storageEntities.CURRENT_TASK_DATA);
-        tasks.push(currentTask);
-        storageManager.set(storageEntities.TASKS_DATA, tasks);
+    saveCurrentTask(currentTaskData) { //saveToCollection(currentTask)
+        const tasks = JSON.parse(this._storage.get(this._storage.entities.TASKS_DATA)) || [];
+        tasks.push(currentTaskData);
+        this._storage.set(this._storage.entities.TASKS_DATA, tasks);
     },
     deleteTask(id) {
-        const tasks = this._getAllTasks();
+        const tasks = this._storage.get(this._storage.entities.TASKS_DATA);
+        if (!tasks) throw new Error(`Отсутствуют данные по ключу ${this._storage.entities.TASKS_DATA}`);
         const taskIndex = tasks.findIndex(item => item.id === id);
         tasks.splice(taskIndex, 1);
-        storageManager.set(storageEntities.TASKS_DATA, tasks);
+        this._storage.set(this._storage.entities.TASKS_DATA, tasks);
     },
     _createTask(name, text, code) {
         const date = new Date();
@@ -49,7 +63,4 @@ export const taskManager = {
     
         return new ITask(id, name, text, code, creationDate);
     },
-    _getAllTasks() {
-        return storageManager.get(storageEntities.TASKS_DATA) || [];
-    }
 }
