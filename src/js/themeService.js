@@ -1,8 +1,7 @@
 import { Compartment } from "@codemirror/state";
 import { UIComponentFactory } from "./UIComponentFactory";
-import { storageEntities, storageManager } from "./storageService";
+import { StorageService } from "./storageService";
 import { barf, tomorrow } from "thememirror";
-import { eventBus } from "./eventBus";
 
 const themeSwitcherData = Object.freeze({
     'dark': {
@@ -67,8 +66,7 @@ const themeSwitcherController = {
 
 export const themeService = {
     editorTheme: new Compartment(),
-    _sm: storageManager,
-    _eb: eventBus,
+    _storage: new StorageService(),
     _switcherController: themeSwitcherController,
     _editorView: null,
 
@@ -86,7 +84,7 @@ export const themeService = {
         this._switcherController.updateState(themeState);
 
         this._switcherController.onSwitching(() => {
-            const currentTheme = this._sm.get(storageEntities.CURRENT_THEME);
+            const currentTheme = this._storage.get(this._storage.entities.CURRENT_THEME);
             const newTheme = toggleState(currentTheme);
 
             this._setCurrentKey(newTheme);
@@ -117,13 +115,13 @@ export const themeService = {
     },
     _setCurrentKey(theme) {
         if (theme === themeServiceData.keyDark) {
-            this._sm.set(storageEntities.CURRENT_THEME, themeServiceData.keyDark, false);
+            this._storage.set(this._storage.entities.CURRENT_THEME, themeServiceData.keyDark, false);
         } else {
-            this._sm.set(storageEntities.CURRENT_THEME, themeServiceData.keyLight, false);
+            this._storage.set(this._storage.entities.CURRENT_THEME, themeServiceData.keyLight, false);
         }
     },
     _getCurrentKey() {
-        return this._sm.get(storageEntities.CURRENT_THEME);
+        return this._storage.get(this._storage.entities.CURRENT_THEME);
     },
     _getSystemPrefered() {
         return window.matchMedia('(prefers-color-scheme:dark)').matches ? themeServiceData.keyDark : themeServiceData.keyLight;

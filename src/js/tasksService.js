@@ -1,4 +1,6 @@
-import { storageEntities, storageManager } from "./storageService";
+import { StorageService } from "./storageService";
+
+const _storage = Symbol('_storage');
 
 function ITask(id, name, text, code, startDate, endDate = startDate, importance = null) {
     this.id = id;
@@ -11,32 +13,9 @@ function ITask(id, name, text, code, startDate, endDate = startDate, importance 
 }
 
 export const taskManager = {
-    addOrUpdateCurrentTask(code) {
-        const taskData = 
-            storageManager.get(storageEntities.DESCRIPTION_FORM_DATA) ||
-            storageManager.get(storageEntities.CURRENT_TASK_DATA);
-        
-        const descriptionFormObj = JSON.parse(taskData);
-        const {name, text} = descriptionFormObj;
-        const currentTaskData = this._createTask(name, text, code);
-        storageManager.set(storageEntities.CURRENT_TASK_DATA, currentTaskData);
-    },
-    /**
-     * Сохраняет текущую задачу в коллекцию-архив (берет данные по задаче из current-task-data в LS)
-     */
-    saveCurrentTask() {
-        const tasks = this._getAllTasks();
-        const currentTask = storageManager.get(storageEntities.CURRENT_TASK_DATA);
-        tasks.push(currentTask);
-        storageManager.set(storageEntities.TASKS_DATA, tasks);
-    },
-    deleteTask(id) {
-        const tasks = this._getAllTasks();
-        const taskIndex = tasks.findIndex(item => item.id === id);
-        tasks.splice(taskIndex, 1);
-        storageManager.set(storageEntities.TASKS_DATA, tasks);
-    },
-    _createTask(name, text, code) {
+    [_storage]: new StorageService(),
+
+    addCurrent(data) {
         const date = new Date();
         const id = Date.now();
         const 
@@ -46,10 +25,30 @@ export const taskManager = {
             hours = date.getHours(),
             minutes = date.getMinutes();
         const creationDate = `${day}.${month}.${year} ${hours}:${minutes}`;
-    
-        return new ITask(id, name, text, code, creationDate);
+        const {name, text} = data;
+        const taskObj = new ITask(id, name, text, null, creationDate);
+
+        this[_storage].set(this[_storage].entities.CURRENT_TASK_DATA, taskObj);
     },
-    _getAllTasks() {
-        return storageManager.get(storageEntities.TASKS_DATA) || [];
+    updateCurrent(data) {
+        const currentTask = JSON.parse(this[_storage].get(this[_storage].entities.CURRENT_TASK_DATA));
+        const {name, text, code} = data;
+        const updatedTask = new ITask(currentTask.id, name ?? currentTask.name, text ?? currentTask.text, code ?? currentTask.code, currentTask.startDate);
+        this[_storage].set(this[_storage].entities.CURRENT_TASK_DATA, updatedTask, false);
+    },
+    /**
+     * Сохраняет текущую задачу в коллекцию-архив
+     */
+    saveCurrentTask(currentTaskData) { //saveToCollection(currentTask)
+        const tasks = JSON.parse(this[_storage].get(this[_storage].entities.TASKS_DATA)) || [];
+        tasks.push(currentTaskData);
+        this[_storage].set(this[_storage].entities.TASKS_DATA, tasks);
+    },
+    deleteTask(id) {
+        const tasks = this[_storage].get(this[_storage].entities.TASKS_DATA);
+        if (!tasks) throw new Error(`Отсутствуют данные по ключу ${this[_storage].entities.TASKS_DATA}`);
+        const taskIndex = tasks.findIndex(item => item.id === id);
+        tasks.splice(taskIndex, 1);
+        this[_storage].set(this[_storage].entities.TASKS_DATA, tasks);
     }
 }

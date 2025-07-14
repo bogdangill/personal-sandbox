@@ -2,11 +2,13 @@ import { marked } from "marked";
 import { UIComponentFactory } from "./UIComponentFactory";
 import { DescriptionFormController, DescriptionFormView } from "./descriptionForm";
 import { fillDescriptionForm, notify, showScroll } from "./helpers";
-import { storageEntities, storageManager } from "./storageService";
+import { StorageService } from "./storageService";
 import { ComponentService } from "./ComponentService";
+import { taskManager } from "./tasksService";
 
 export function DescriptionService() {
-    this.sm = storageManager;
+    this.storage = new StorageService();
+    this.taskManager = taskManager;
     ComponentService.call(this);
 }
 DescriptionService.prototype = Object.create(ComponentService.prototype);
@@ -16,7 +18,6 @@ DescriptionService.prototype.initForm = function() {
     const view = new DescriptionFormView('#task-description');
     const controller = new DescriptionFormController(view);
     this.registerInstances(view, controller);
-    console.log(this.getController());
     controller.init();
 
     const taskDescriptionContainer = document.getElementById('task-description');
@@ -24,7 +25,8 @@ DescriptionService.prototype.initForm = function() {
     fillDescriptionForm(controller.form);
 
     controller.onSubmit(data => {
-        this.sm.set(storageEntities.DESCRIPTION_FORM_DATA, data);
+        this.taskManager.addCurrent(data);
+        // this.storage.set(this.storage.entities.CURRENT_TASK_DATA, data);
         notify('Описание успешно сохранено!', 'success', 'check-square');
     });
 }
@@ -36,7 +38,7 @@ DescriptionService.prototype.renderCell = function(withOptions = false) {
         const options = [
             {text: 'Изменить', value: 'edit'},
             {text: 'Удалить', value: 'delete', handler: () => {
-                this.sm.remove(storageEntities.DESCRIPTION_FORM_DATA)
+                this.storage.remove(this.storage.entities.CURRENT_TASK_DATA);
             }}
         ];
         const dropdown = UIComponentFactory.createDropdown('Редактировать', options);
@@ -56,6 +58,7 @@ DescriptionService.prototype.destroyCell = function() {
     cell.remove();
 }
 DescriptionService.prototype.renderView = function(data) {
+    console.log(data);
     const taskDescriptionContainer = document.getElementById('task-description');
     const taskObj = JSON.parse(data);
     const {name, text} = taskObj;
