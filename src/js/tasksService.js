@@ -34,7 +34,7 @@ export const taskManager = {
         const currentTask = JSON.parse(this[_storage].get(this[_storage].entities.CURRENT_TASK_DATA));
         const {name, text, code} = data;
         const updatedTask = new ITask(currentTask.id, name ?? currentTask.name, text ?? currentTask.text, code ?? currentTask.code, currentTask.startDate);
-        this[_storage].set(this[_storage].entities.CURRENT_TASK_DATA, updatedTask, false);
+        this[_storage].set(this[_storage].entities.CURRENT_TASK_DATA, updatedTask, true, 'updated');
     },
     /**
      * Сохраняет текущую задачу в коллекцию-архив

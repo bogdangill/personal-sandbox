@@ -12,6 +12,13 @@ export const screenManager = {
 
         this._currentStep++;
     },
+    showEditStep() {
+        this._ds.initForm('edit');
+    },
+    hideEditStep(data) {
+        this._ds.destroyForm();
+        this._ds.renderView(data);
+    },
     showResolvingStep(data) {
         this._ds.destroyForm();
         if (this._currentStep) this._ds.destroyCell();

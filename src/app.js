@@ -35,6 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = storage.get(storage.entities.CURRENT_TASK_DATA);
         screenManager.showResolvingStep(data);
     });
+    storage.beforeUpdate(storage.entities.CURRENT_TASK_DATA, () => {
+        screenManager.showEditStep();
+    });
+    storage.afterUpdate(storage.entities.CURRENT_TASK_DATA, () => {
+        const data = storage.get(storage.entities.CURRENT_TASK_DATA);
+        screenManager.hideEditStep(data);
+    });
     storage.onRemove(storage.entities.CURRENT_TASK_DATA, () => {
         screenManager.hideResolvingStep();
         screenManager.showInitialStep();
