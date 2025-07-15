@@ -5,6 +5,7 @@ import { fillDescriptionForm, notify, showScroll } from "./helpers";
 import { StorageService } from "./storageService";
 import { ComponentService } from "./ComponentService";
 import { taskManager } from "./tasksService";
+import { eventBus } from "./eventBus";
 
 export function DescriptionService() {
     this.storage = new StorageService();
@@ -14,7 +15,7 @@ export function DescriptionService() {
 DescriptionService.prototype = Object.create(ComponentService.prototype);
 DescriptionService.prototype.constructor = DescriptionService;
 
-DescriptionService.prototype.initForm = function() {
+DescriptionService.prototype.initForm = function(type) {
     const view = new DescriptionFormView('#task-description');
     const controller = new DescriptionFormController(view);
     this.registerInstances(view, controller);
@@ -22,13 +23,37 @@ DescriptionService.prototype.initForm = function() {
 
     const taskDescriptionContainer = document.getElementById('task-description');
     showScroll(taskDescriptionContainer);
-    fillDescriptionForm(controller.form);
 
-    controller.onSubmit(data => {
-        this.taskManager.addCurrent(data);
-        // this.storage.set(this.storage.entities.CURRENT_TASK_DATA, data);
-        notify('Описание успешно сохранено!', 'success', 'check-square');
-    });
+    if (type === 'edit') {
+        view.submitButton.textContent = 'Изменить';
+        view.resetButton.type = 'button';
+        view.resetButton.textContent = 'Отмена';
+
+        const data = this.storage.get(this.storage.entities.CURRENT_TASK_DATA);
+        const {name, text} = JSON.parse(data);
+
+        view.resetButton.addEventListener('click', () => {
+            this.destroyForm();
+            this.renderView(data);
+        });
+        setTimeout(() => {
+            controller.form.input.value = name;
+            controller.form.textarea.value = text;
+            controller.form.textarea.dispatchEvent(new CustomEvent('sl-input'));
+        });
+
+        controller.onSubmit(data => {
+            this.taskManager.updateCurrent(data);
+            notify('Описание успешно изменено!', 'success', 'check-square');
+        });
+    } else {
+        fillDescriptionForm(controller.form);
+        
+        controller.onSubmit(data => {
+            this.taskManager.addCurrent(data);
+            notify('Описание успешно сохранено!', 'success', 'check-square');
+        });
+    }
 }
 DescriptionService.prototype.renderCell = function(withOptions = false) {
     const root = document.getElementById('root');
@@ -36,7 +61,13 @@ DescriptionService.prototype.renderCell = function(withOptions = false) {
     if (withOptions) {
         const header = descriptionCell.querySelector('header');
         const options = [
-            {text: 'Изменить', value: 'edit'},
+            {text: 'Изменить', value: 'edit', handler: () => {
+                const descriptionContainer = document.getElementById('task-description');
+                descriptionContainer.innerHTML = '';
+                //событие, которое триггерит менеджер экранов (showEditStep)
+                eventBus.dispatch('current-task-data-update');
+                
+            }},
             {text: 'Удалить', value: 'delete', handler: () => {
                 this.storage.remove(this.storage.entities.CURRENT_TASK_DATA);
             }}
@@ -58,7 +89,6 @@ DescriptionService.prototype.destroyCell = function() {
     cell.remove();
 }
 DescriptionService.prototype.renderView = function(data) {
-    console.log(data);
     const taskDescriptionContainer = document.getElementById('task-description');
     const taskObj = JSON.parse(data);
     const {name, text} = taskObj;
