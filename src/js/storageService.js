@@ -62,7 +62,7 @@ StorageService.prototype.get = function(entity) {
  * устанавливает значение ключа в Storage и публикует соответствующее ему событие(опционально)
  * @param {entities} entity - название ключа из Storage
  */
-StorageService.prototype.set = function(entity, data, createEvent = true) {
+StorageService.prototype.set = function(entity, data, createEvent = true, eventType = 'created') {
     const config = this[_getConfig](entity);
     const storage = this[_getStorage](config.storage);
 
@@ -70,7 +70,7 @@ StorageService.prototype.set = function(entity, data, createEvent = true) {
 
     storage.setItem(config.key, data);
 
-    if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'created'));
+    if (createEvent) eventBus.dispatch(this[_getEventName](entity, eventType));
 }
 /**
  * устанавливает данные по ключу в Storage и публикует соответствующее ему событие(опционально)
@@ -91,12 +91,28 @@ StorageService.prototype.remove = function(entity, createEvent = true) {
     if (createEvent) eventBus.dispatch(this[_getEventName](entity, 'deleted'));
 }
 /**
- * хук для отлова опубликованного события обновления Storage
+ * хук для отлова опубликованного события создания сущности в Storage
  * @param {entities} entity - название ключа из Storage
  * @param {function} cb - коллбэк-функция, которая триггерится во время события
  */
 StorageService.prototype.onCreate = function(entity, cb) {
     eventBus.listen(this[_getEventName](entity, 'created'), cb);
+}
+/**
+ * хук для отлова опубликованного события перед изменением сущности в Storage
+ * @param {entities} entity - название ключа из Storage
+ * @param {function} cb - коллбэк-функция, которая триггерится во время события
+ */
+StorageService.prototype.beforeUpdate = function(entity, cb) {
+    eventBus.listen(this[_getEventName](entity, 'update'), cb);
+}
+/**
+ * хук для отлова опубликованного события после изменения сущности в Storage
+ * @param {entities} entity - название ключа из Storage
+ * @param {function} cb - коллбэк-функция, которая триггерится во время события
+ */
+StorageService.prototype.afterUpdate = function(entity, cb) {
+    eventBus.listen(this[_getEventName](entity, 'updated'), cb);
 }
 /**
  * хук для отлова опубликованного события удаленного ключа с данными из Storage
