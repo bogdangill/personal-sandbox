@@ -175,6 +175,9 @@ main {
 .simplebar-track.simplebar-horizontal {
     height: var(--sl-spacing-medium);
 }
+.simplebar-content {
+    height: 100%;
+}
 
 #task-description {
     strong {
@@ -207,13 +210,14 @@ main {
 }
 
 .task-form {
+    position: relative;
     display: flex;
     flex-direction: column;
     // grid-template-rows: auto 1fr auto;
     gap: var(--sl-spacing-medium);
     height: 100%;
     padding-top: var(--sl-spacing-medium);
-    padding-bottom: var(--sl-spacing-medium);
+    // padding-bottom: var(--sl-spacing-medium);
 
     sl-textarea {
         flex-grow: 1;
@@ -226,9 +230,15 @@ main {
 }
 
 .form-buttons {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--sl-spacing-medium);
+    @include backgroundColor(neutral, 50);
+    padding: var(--sl-spacing-medium) 0;
 }
 
 .task-header {

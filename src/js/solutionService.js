@@ -21,6 +21,9 @@ SolutionService.prototype.initForm = function(data) {
 
     controller.init(data);
 
+    const taskSolutionContainer = document.getElementById('task-solution');
+    showScroll(taskSolutionContainer);
+
     controller.onSave(data => {
         // this.tm.saveCurrentTask(data);
         this.tm.updateCurrent({code: data});
