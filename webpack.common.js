@@ -10,16 +10,7 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
-                { 
-                    from: './src/training-tasks/*.md', 
-                    to: 'training-tasks/[name][ext]', 
-                },
-                { from: './src/training-tasks/*.js', to: 'training-tasks/[name][ext]' },
                 { from: './src/assets', to: 'assets'},
-                {
-                    from: path.resolve(__dirname, 'node_modules/@shoelace-style/shoelace/dist/assets'),
-                    to: path.resolve(__dirname, 'build/shoelace/assets')
-                }
             ],
         })
     ],
