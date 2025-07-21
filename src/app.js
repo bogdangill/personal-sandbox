@@ -1,8 +1,12 @@
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import '@shoelace-style/shoelace/dist/themes/dark.css';
 import './scss/styles.scss';
-import 'highlight.js/scss/an-old-hope.scss';
 
 //веб-компоненты Шнурков
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
+// import '@shoelace-style/shoelace/dist/components/divider/divider.js';
+
+import { setBasePath } from '@shoelace-style/shoelace';
+setBasePath('/vendor/shoelace');
 
 import { screenManager } from './js/screenManager';
 import { StorageService } from './js/storageService';

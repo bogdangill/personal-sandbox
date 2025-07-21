@@ -29,12 +29,12 @@ module.exports = merge(common, {
                 /^hljs-/
             ],
             variables: true //чищу от неиспользуемых переменных от разных тем фреймворков из под капота
-        })
+        }),
     ],
     module: {
         rules: [
             {
-                test: /\.scss$/i,
+                test: /\.(scss|css)$/,
                 use: [
                     MiniCssExtractPlugin.loader, //2 извлекает цсс в файл
                     'css-loader', //2 превращает цсс в cjs

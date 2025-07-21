@@ -11,6 +11,10 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: './src/assets', to: 'assets'},
+                { 
+                    from: path.resolve(__dirname, "node_modules/@shoelace-style/shoelace/dist/assets"), 
+                    to: path.resolve(__dirname, "build/vendor/shoelace/assets") 
+                }
             ],
         })
     ],
