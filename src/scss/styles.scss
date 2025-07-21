@@ -4,6 +4,10 @@
 @use 'media' as *;
 @use 'mixins' as *;
 
+:not(:defined) {
+    visibility: hidden;
+}
+
 html {
     font-family: "Ubuntu Sans Mono", monospace;
     font-optical-sizing: auto;

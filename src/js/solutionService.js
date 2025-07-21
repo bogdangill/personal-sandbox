@@ -2,10 +2,10 @@ import { UIComponentFactory } from "./UIComponentFactory";
 import { notify, showScroll } from "./helpers";
 import { SolutionFormController, SolutionFormView } from "./solutionForm";
 import { taskManager } from "./tasksService";
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
+// import hljs from 'highlight.js/lib/core';
+// import javascript from 'highlight.js/lib/languages/javascript';
 import { ComponentService } from "./ComponentService";
-hljs.registerLanguage('javascript', javascript);
+// hljs.registerLanguage('javascript', javascript);
 
 export function SolutionService() {
     this.tm = taskManager;
@@ -45,11 +45,11 @@ SolutionService.prototype.destroyCell = function() {
     const cell = document.getElementById('solution-cell');
     cell.remove();
 }
-SolutionService.prototype.renderView = function(data) {
-    const solutionContainer = document.getElementById('task-solution');
-    const currentTaskObj = JSON.parse(data);
-    const {code} = currentTaskObj;
-    const highlightedCode = hljs.highlight(code, { language: 'javascript' }).value;
-    solutionContainer.innerHTML = highlightedCode;
-    showScroll(solutionContainer);
-}
+// SolutionService.prototype.renderView = function(data) {
+//     const solutionContainer = document.getElementById('task-solution');
+//     const currentTaskObj = JSON.parse(data);
+//     const {code} = currentTaskObj;
+//     const highlightedCode = hljs.highlight(code, { language: 'javascript' }).value;
+//     solutionContainer.innerHTML = highlightedCode;
+//     showScroll(solutionContainer);
+// }

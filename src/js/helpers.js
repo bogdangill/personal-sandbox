@@ -1,9 +1,4 @@
-import '@shoelace-style/shoelace/dist/components/alert/alert';
-import '@shoelace-style/shoelace/dist/components/icon/icon';
-
 import SimpleBar from 'simplebar';
-import ResizeObserver from 'resize-observer-polyfill';
-window.ResizeObserver = ResizeObserver;
 
 function escapeHtml(html) {
     const div = document.createElement('div');

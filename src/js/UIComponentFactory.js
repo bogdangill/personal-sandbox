@@ -1,13 +1,3 @@
-import '@shoelace-style/shoelace/dist/components/button/button';
-import '@shoelace-style/shoelace/dist/components/icon/icon';
-import '@shoelace-style/shoelace/dist/components/tooltip/tooltip';
-import '@shoelace-style/shoelace/dist/components/textarea/textarea';
-import '@shoelace-style/shoelace/dist/components/input/input';
-import '@shoelace-style/shoelace/dist/components/divider/divider';
-import '@shoelace-style/shoelace/dist/components/dropdown/dropdown';
-import '@shoelace-style/shoelace/dist/components/menu/menu';
-import '@shoelace-style/shoelace/dist/components/menu-item/menu-item';
-
 /**
  * @namespace
  * Фабрика для создания UI-компонентов.
