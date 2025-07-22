@@ -47,7 +47,7 @@ module.exports = merge(common, {
     optimization: {
         minimizer: [
             new CssMinimizerPlugin(),
-            new TerserPlugin({parallel: true})
+            new TerserPlugin()
         ]
     },
 })
