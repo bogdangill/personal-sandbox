@@ -8,6 +8,7 @@ import { ScreenManager } from './js/ScreenManager.mock';
 
 document.addEventListener('DOMContentLoaded', () => {
     themeService.init();
+    //test
     // const root = document.querySelector('#root');
     // const btnCreate = UIComponentFactory.createButton('primary', 'Создать компонент');
     // const btnDestroy = UIComponentFactory.createButton('danger', 'Удалить компонент');
