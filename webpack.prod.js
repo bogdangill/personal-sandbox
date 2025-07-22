@@ -24,13 +24,13 @@ module.exports = merge(common, {
         new MiniCssExtractPlugin({
             filename: 'styles.[contenthash].css'
         }),
-        new PurgeCSSPlugin({
-            paths: glob.sync(`${PATHS.build}/**/*`, { nodir: true }),
-            safelist: [
-                /^hljs-/
-            ],
-            variables: true //чищу от неиспользуемых переменных от разных тем фреймворков из под капота
-        }),
+        // new PurgeCSSPlugin({
+        //     paths: glob.sync(`${PATHS.build}/**/*`, { nodir: true }),
+        //     safelist: [
+        //         /^hljs-/
+        //     ],
+        //     variables: true //чищу от неиспользуемых переменных от разных тем фреймворков из под капота
+        // }),
     ],
     module: {
         rules: [
